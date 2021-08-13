@@ -1,0 +1,249 @@
+.documentBackground {
+    flex: 1;
+    background-color: rgb(255, 255, 255);
+    margin: 5px;
+    padding: 20px;
+    min-height: fit-content;
+    box-sizing: border-box;
+    border: 1px solid #373f4e;
+    white-space: pre-wrap;
+    max-width: 1024px;
+    overflow-y: overlay;
+}
+
+.editBackground {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    background-color: rgb(188, 196, 212);
+    margin: 5px;
+    min-height: fit-content;
+    box-sizing: border-box;
+    border: 1px solid #373f4e;
+    overflow-y: auto;
+}
+
+.groupSection {
+    background-color: #3b4b68;
+    border: 1px solid white;
+    padding: 5px;
+    margin: 5px;
+    color: white;
+    font-weight: bold;
+    box-sizing: border-box;
+}
+
+.groupSection.fill {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.subGroupSection {
+    background-color: #4e5f7e;
+    border: 1px solid white;
+    padding: 5px;
+    margin: 5px;
+    color: white;
+    font-weight: bold;
+}
+
+.inputSection {
+    background-color: #373f4e;
+    border: 1px solid white;
+    padding: 5px;
+    margin: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    color: white;
+    font-weight: normal;
+}
+
+.inputSection.fill {
+    flex: 1;
+}
+
+.inputSectionText {
+    width: 80px;
+    margin-left: 5px;
+    text-transform: capitalize;
+    height: fit-content;
+}
+
+.inputSectionText.expand {
+    width: 100%;
+    cursor: pointer;
+    user-select: none;
+}
+
+.inputSectionInput {
+    flex: 1;
+    height: 100%;
+    box-sizing: border-box;
+    margin-left: 10px;
+    right: 0;
+    resize: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.documentCenter {
+    display: flex;
+    align-self: center;
+    flex: 1;
+}
+
+.documentTitle {
+    color: black;
+    font-weight: bolder;
+    font-size: xx-large;
+    border-bottom: 2px solid black;
+    margin: 5px;
+    padding: 5px;
+}
+
+.documentHeader1 {
+    color: black;
+    font-weight: bold;
+    font-size: xx-large;
+    border-bottom: 1px solid black;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.documentHeader2 {
+    color: black;
+    font-weight: bold;
+    font-size: x-large;
+    border-bottom: 1px solid black;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.documentHeader3 {
+    color: black;
+    font-weight: bold;
+    font-size: larger;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.documentHeader4 {
+    color: rgb(24, 24, 24);
+    font-weight: bold;
+    font-size: large;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.documentBody {
+    color: black;
+    font-size: medium;
+    margin: 5px;
+    padding: 5px;
+}
+
+.documentSlideGroup {
+    display: flex;
+    height: 100%;
+    overflow: auto;
+}
+
+.documentSlideHandle {
+    width: 5px;
+    background-color: white;
+    cursor: grab;
+}
+
+.documentBox {
+    display: inline-block;
+    border: 1px solid black;
+    width: 100%;
+    min-width: fit-content;
+    height: fit-content;
+    flex: 1;
+    box-sizing: border-box;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: rgba(154, 179, 211, 0.5);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.documentLink {
+    display: inline-block;
+    color: black;
+    text-decoration: none;
+    width: fit-content;
+    height: fit-content;
+}
+
+.documentLink:hover {
+    text-decoration: underline;
+}
+
+.documentText {
+    flex: 1;
+    color: black;
+    text-align: left;
+    align-self: center;
+    margin: 0 20px 20px 20px;
+    white-space: pre-line;
+}
+
+.documentList {
+    padding-left: 5px;
+    margin-left: 5px;
+    border-left: 1px solid black;
+}
+
+.documentListItem {
+    padding: 2px;
+}
+
+.documentAlign {
+    display: flex;
+    flex-direction: row;
+}
+
+.documentAlign > * {
+    margin: 5px;
+}
+
+.documentBold {
+    font-weight: bold;
+    display: inline-block;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.documentGroup {
+    flex: auto;
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    justify-content: center;
+}
+
+.documentVerticalGroup {
+    flex: auto;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+}
+
+.documentImage {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+}
+
+.documentImageContainer {
+    display: flex;
+    flex: 1;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

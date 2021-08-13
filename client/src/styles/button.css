@@ -1,0 +1,52 @@
+
+.button {
+    flex: 1;
+    display: block;
+    text-align: center;
+    align-content: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: large;
+    text-decoration: none;
+    user-select: none;
+    color: white;
+    border: 1px solid white;
+    background-color: rgb(68, 74, 83);
+    padding: 20px;
+    margin: 10px;
+}
+
+.button.small {
+    font-size: medium;
+    padding: 10px;
+    margin: 10px 0 0 0;
+}
+
+.button.round {
+    border-radius: 30px;
+}
+
+.button.last {
+    flex: 0;
+    min-width: fit-content;
+    margin: 10px 10px 10px 0;
+}
+
+.button:active {
+    background-color: rgb(43, 51, 63);
+}
+
+.button.disabled {
+    color: rgb(163, 166, 170);
+    background: rgb(83, 85, 88);
+    cursor: default;
+}
+
+.button.disabled:active {
+    background: rgb(83, 85, 88);
+}
+
+.buttonHolder {
+    display: flex;
+    flex-direction: row;
+}

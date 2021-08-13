@@ -1,0 +1,67 @@
+.fileMenu {
+    left: 0;
+    position: fixed;
+    display: block;
+    word-wrap: break-word;
+    background: linear-gradient(0deg, #222d42, #282c34);
+    min-width: 200px;
+    max-width: 200px;
+    height: calc(100vh - 55px);
+    border: 1px solid white;
+    box-sizing: border-box;
+    padding: 5px;
+    margin: 5px;
+}
+
+.file {
+    display: block;
+    color: rgb(150, 156, 184);
+    cursor: pointer;
+    text-decoration: none;
+    user-select: none;
+}
+
+.file.selected {
+    background-color: #ffffff0a;
+}
+
+.file:active {
+    color: #97afe5;
+}
+
+.file:hover {
+    background-color: #ffffff17;
+}
+
+.file.input {
+    font-size: medium;
+    min-height: auto;
+    border: 0;
+    padding: 0 0 0 10px;
+    width: calc(100% - 10px);
+}
+
+.folder {
+    color: white;
+    cursor: pointer;
+    user-select: none;
+}
+
+.folderHeader {
+    color: inherit;
+}
+
+.folderHeader:active {
+    color: #93b3ff;
+}
+
+.folderHeader:hover {
+    background-color: #424957;
+}
+
+.folderContent {
+    color: rgb(118, 137, 221);
+    margin-left: 5px;
+    border-left: 1px solid rgb(126, 126, 126);
+    padding-left: 5px;
+}

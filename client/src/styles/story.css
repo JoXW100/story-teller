@@ -1,0 +1,67 @@
+
+.storyHolder {
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    height: calc(100vh - 55px);
+}
+
+.storyTitle {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    justify-content: center;
+    background-color: #282c34;
+    border-bottom: 2px solid white;
+    position: sticky;
+    top: 0;
+    font-size: x-large;
+    padding: 10px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.storyTitleButton {
+    position: absolute;
+    cursor: pointer;
+    user-select: none;
+    right: 20px;
+}
+
+.storyTitleButton:hover {
+    color: #c7c7c7;
+}
+
+.storyTitleButton:active {
+    color: #a5a5a5;
+}
+
+.storyBody {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    left: 210px;
+    width: calc(100% - 215px);
+    overflow: hidden;
+}
+
+.storyDocument {
+    background-color: rgb(176, 183, 197);
+    margin-top: 5px;
+    margin-bottom: 0;
+    height: calc(100% - 60px);
+    box-sizing: border-box;
+    border: 1px solid #373f4e;
+    color: black;
+    flex: 1;
+}
+
+.storyDocumentInner {
+    margin: 10px;
+}
+
+.storyMenuHeader {
+    text-align: center;
+    border-bottom: 2px solid white;
+    margin-bottom: 5px;
+}

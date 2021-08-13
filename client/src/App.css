@@ -1,0 +1,127 @@
+.App {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(0deg, #222d42, #282c34);
+    min-height: 100vh;
+    color: white;
+    overflow: hidden;
+}
+
+.AppHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    background-color: #282c34;
+    border-bottom: 2px solid white;
+    position: sticky;
+    top: 0;
+}
+
+.AppHeaderItem {
+    background-color: #6492dd;
+    color: white;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    border: 1px solid white;
+    padding: 5px;
+    margin: 5px;
+}
+
+.AppBody {
+    flex: 1;
+    display: block;
+    overflow: auto;
+    max-width: 1024px;
+    align-self: center;
+    width: 100%;
+}
+
+.AppTitle {
+    text-align: center;
+    justify-content: center;
+    background-color: #282c34;
+    border-bottom: 2px solid white;
+    position: sticky;
+    top: 0;
+    font-size: x-large;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.AppBodyContainer {
+    display: flex;
+    background-color: #41454e;
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid white;
+}
+
+.OptionContainer {
+    display: block;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    flex-direction: column;
+    border: 2px solid white;
+    position: absolute;
+    bottom: 100px;
+    width: 100vh;
+}
+
+.MainImage {
+    display: block;
+    margin: auto;
+}
+
+.OptionItem {
+    margin: 10px;
+    height: 60px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    background-color: #41454e;
+    border: 1px solid white;
+    color: white;
+    font-size: larger;
+    text-decoration: none;
+}
+
+.OptionItem.Disabled {
+    color: gray;
+    border: 1px solid gray;
+}
+
+input {
+    background-color: white;
+    border-radius: 20px;
+    min-height: 20px;
+    padding: 5px 10px;
+    border: 1px solid transparent;
+    color: rgb(0, 0, 0);
+}
+
+input:focus {
+    border: 1px solid black;
+    outline: none;
+}
+
+textarea {
+    background-color: white;
+    border-radius: 20px;
+    min-height: 100px;
+    height: fit-content;
+    padding: 10px 15px;
+    font: 400 13.3333px Arial;
+    border: 1px solid transparent;
+    color: rgb(0, 0, 0);
+}
+
+textarea:focus {
+    border: 1px solid black;
+    outline: none;
+}

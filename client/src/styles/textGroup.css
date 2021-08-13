@@ -1,0 +1,16 @@
+
+.textGroup {
+    display: block;
+}
+
+.textGroupBig {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+}
+
+.textGroupSmall {
+    font-size: small;
+    position: absolute;
+    transform: translate(-10px, -5px);
+}

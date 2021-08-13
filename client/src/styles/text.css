@@ -1,0 +1,13 @@
+
+h2 {
+    color: black;
+    font-size: xx-large;
+    width: fit-content;
+    border-bottom: 2px solid black;
+}
+
+h3 {
+    color: black;
+    font-size: x-large;
+    width: fit-content;
+}
