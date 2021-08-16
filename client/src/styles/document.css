@@ -6,7 +6,7 @@
     min-height: fit-content;
     box-sizing: border-box;
     border: 1px solid #373f4e;
-    white-space: pre-wrap;
+    white-space: pre-line;
     max-width: 1024px;
     overflow-y: overlay;
 }
@@ -159,28 +159,33 @@
 .documentBox {
     display: inline-block;
     border: 1px solid black;
-    width: 100%;
-    min-width: fit-content;
-    height: fit-content;
-    flex: 1;
     box-sizing: border-box;
-    margin-top: 10px;
-    margin-bottom: 10px;
     background-color: rgba(154, 179, 211, 0.5);
     text-align: center;
     white-space: nowrap;
+    min-width: fit-content;
+    height: fit-content;
+    justify-content: center;
+    flex: 1;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .documentLink {
     display: inline-block;
-    color: black;
+    color: rgb(60, 106, 150);
     text-decoration: none;
     width: fit-content;
     height: fit-content;
+    margin-left: 5px;
+    margin-right: 5px;
+    font-weight: 400;
 }
 
 .documentLink:hover {
-    text-decoration: underline;
+    color: rgb(28, 65, 100);
+    font-weight: 450;
 }
 
 .documentText {
@@ -193,13 +198,27 @@
 }
 
 .documentList {
-    padding-left: 5px;
-    margin-left: 5px;
+    border-top: 1px solid black;
     border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
 }
 
-.documentListItem {
-    padding: 2px;
+.documentList > * {
+    padding: 2px 2px 2px 5px;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 1px solid black;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.documentList > *:last-child {
+    border-radius: 10px;
 }
 
 .documentAlign {
@@ -209,6 +228,7 @@
 
 .documentAlign > * {
     margin: 5px;
+    display: flex;
 }
 
 .documentBold {
@@ -219,19 +239,19 @@
 }
 
 .documentGroup {
-    flex: auto;
     display: flex;
     flex-direction: row;
     text-align: center;
     justify-content: center;
+    align-items: center;
 }
 
 .documentVerticalGroup {
-    flex: auto;
     display: flex;
     flex-direction: column;
     text-align: center;
     justify-content: center;
+    align-items: center;
 }
 
 .documentImage {
@@ -246,4 +266,9 @@
     flex: 1;
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.documentFill {
+    width: 100%;
+    flex: 1;
 }

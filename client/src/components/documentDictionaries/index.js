@@ -12,3 +12,4 @@ export * from './bold';
 export * from './group';
 export * from './vGroup';
 export * from './image';
+export * from './fill';

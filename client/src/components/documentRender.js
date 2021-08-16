@@ -14,7 +14,8 @@ import {
     toBoldDictionary,
     toGroupDictionary,
     toVGroupDictionary,
-    toImageDictionary
+    toImageDictionary,
+    toFillDictionary
 } from './documentDictionaries';
 
 const tagList = [
@@ -31,7 +32,8 @@ const tagList = [
     toBoldDictionary,
     toGroupDictionary,
     toVGroupDictionary,
-    toImageDictionary
+    toImageDictionary,
+    toFillDictionary
 ]
 
 let tagDictionary = {};

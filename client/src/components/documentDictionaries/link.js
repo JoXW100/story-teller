@@ -23,7 +23,11 @@ export const toLinkDictionary = (index) => ({
 const DocumentLink = ({ targetID, children }) => 
 {
     const href = window.location.href.split(/\//);
+
     return (
+        targetID && targetID.startsWith("http") ?
+        <a href={targetID} className="documentLink"> {children} </a>
+        :
         <Link 
             className="documentLink"
             to={`/stories/${href[4]}/${targetID ? targetID : href[5]}/${href[6]}`}

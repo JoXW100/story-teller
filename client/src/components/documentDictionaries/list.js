@@ -6,11 +6,7 @@ export const toListDictionary = (index) => ({
         cmp: index,  
         type: "list", 
         toComponent: (content, index) => (
-            <div className="documentList" key={index}> 
-                {content.map((item, i) => (
-                    <div className="documentListItem" key={i}> - {item} </div>
-                ))}
-            </div>
+            <DocumentList key={index}> {content} </DocumentList>
         )
     },
     "</list>": { 
@@ -22,11 +18,20 @@ const DocumentList = ({ children }) =>
 {
     return (
         <div className="documentList"> 
-            {children.map((item, i) => (
-                <div className="documentListItem" key={i}> - {item} </div>
+            {children[1].map((item, i) => (
+                <DocumentListItem key={i} number={i + 1}> {item} </DocumentListItem>
             ))}
         </div>
-    )
+    );
+}
+
+export const DocumentListItem = ({ children, number }) => 
+{
+    return (
+        <div>
+            {`(${number})`} {children}
+        </div>
+    );
 }
 
 export default DocumentList;
