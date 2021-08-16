@@ -59,7 +59,7 @@ const FileSystem = ({ story, fileData }) =>
 }
  
 /**
- * @param {{ data: StoryFile, parent: StoryFile, fileData: FileData, canEdit: boolean}} 
+ * @param {{ data: StoryFileDocument, parent: StoryFile, fileData: FileData, canEdit: boolean}} 
  * @returns {React.Component}
  */
 const File = ({ data, parent, fileData, canEdit = true }) => 
@@ -69,6 +69,7 @@ const File = ({ data, parent, fileData, canEdit = true }) =>
 
     const handleRename = useCallback(() => setTyping(true), [setTyping]);
     const handleRemove = useCallback(() => fileData.remove(parent, data), [fileData, parent, data]);
+    const handleCopyID = useCallback(() => navigator.clipboard.writeText(data.content), [data]);
 
     const done = (text) => 
     {
@@ -81,8 +82,9 @@ const File = ({ data, parent, fileData, canEdit = true }) =>
         e.preventDefault();
         if (canEdit) menu.set({ active: true, x: e.pageX, y: e.pageY, options: 
             [
-                { name: "Rename", action: handleRename},
-                { name: "Remove", action: handleRemove}
+                { name: "Rename", action: handleRename },
+                { name: "Remove", action: handleRemove },
+                { name: "Copy ID", action: handleCopyID }
             ]});
     }
 
