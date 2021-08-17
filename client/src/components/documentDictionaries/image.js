@@ -20,16 +20,17 @@ export const toImageDictionary = (index) => ({
 const DocumentImage = ({ srcID }) => 
 {
     const [image, setImage] = useState();
+    const placeholder = window.location.origin + "/images/placeholder.png";
 
     useEffect(() => 
     {
-        Server.images.get(srcID)
+        srcID && Server.images.get(srcID)
         .then((response) => response && setImage(response))
         .catch(console.error());
     }, [srcID])
 
     return <div className="documentImageContainer">
-        <img alt={image} src={image && URL.createObjectURL(image)} className="documentImage"/>
+        <img alt={""} src={(image && URL.createObjectURL(image)) || placeholder} className="documentImage"/>
     </div>
 }
 

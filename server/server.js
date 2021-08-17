@@ -9,7 +9,11 @@ DBHandler.connect()
 .catch((error) => console.error(error))
 .then((result) => 
 {
-    if (result) initListeners();
+    if (result)
+    {
+        initListeners();
+        addField().catch(console.error());
+    }
 });
 
 const initListeners = () => 
@@ -22,4 +26,10 @@ const initListeners = () =>
     app.use('/documents', documents);
     app.use('/images', images);
     app.listen(8080, () => console.log("Server Started"));
+}
+
+const addField = async () => 
+{
+    //let response = await DBHandler.documents.setField("data.images", []);
+    //console.log(response);
 }

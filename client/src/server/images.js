@@ -1,5 +1,4 @@
-import { postFile, getFile } from "./server";
-import * as FileSystem from 'fs';
+import { get, remove, postFile, getFile } from "./server";
 
 class ImagesCommunication
 {
@@ -25,11 +24,31 @@ class ImagesCommunication
     /**
      * Gets an image to the database
      * @param {string} imageID
-     * @returns {Promise<?{successful: boolean, result: string}>} The id of the document or null
+     * @returns {Promise<?Blob>} The id of the document or null
      */
     async get(imageID)
     {
         return await getFile(`${this.#url}/get`, { id: imageID });
+    }
+
+    /**
+     * Gets a document from the database
+     * @param {string} imageID The database identifer for the image
+     * @returns {Promise<?{successful: boolean, result: ImageInfo}>} The data about the image with the given id
+     */
+    async getData(imageID)
+    {
+        return await get(`${this.#url}/getData`, { id: imageID });
+    }
+
+    /**
+     * Removes an image from the database
+     * @param {string} imageID The database identifer for the image
+     * @returns {Promise<?{successful: boolean, result: boolean}>} If the image was removed
+     */
+    async remove(imageID)
+    {
+        return await remove(`${this.#url}/remove`, { id: imageID });
     }
 }
 

@@ -65,7 +65,7 @@ export const get = async (url, data = {}) =>
 /**
  * @param {string} url
  * @param {Object.<string, any>} data
- * @returns {Promise<?ServerResponse>}
+ * @returns {Promise<?Blob>}
  */
 export const getFile = async (url, data = {}) =>
 {

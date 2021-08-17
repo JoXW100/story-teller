@@ -31,3 +31,12 @@
  * @property {number} dateCreated
  * @property {number} dateUpdated
  */
+
+/**
+ * @typedef ImageInfo
+ * @property {string} _id
+ * @property {number} length
+ * @property {number} chunkSize
+ * @property {string} uploadDate
+ * @property {string} filename
+ */

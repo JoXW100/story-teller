@@ -1,22 +1,27 @@
 
 #contextMenu {
-    background-color: white;
+    background-color: #373f4e;
     border: 1px solid rgb(180, 180, 180);
-    padding: 5px;
     display: block;
     position: absolute;
     width: fit-content;
+    min-width: 100px;
     height: fit-content;
     z-index: 1000;
 }
 
 .contextMenuItem {
+    background-color: #ffffff;
     user-select: none;
     color: black;
     cursor: pointer;
     text-align: left;
     text-decoration: none;
     font-size: small;
+    width: 120px;
+    padding: 3px;
+    margin: 2px;
+    text-indent: 5px;
 }
 
 .contextMenuItem:hover {

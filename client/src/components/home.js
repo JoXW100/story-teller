@@ -33,12 +33,8 @@ const Home = ({ history }) =>
         if (storyID && storyID !== "undefined")
         {
             Server.stories.get(storyID)
-            .then((response) => 
-            {
-                if (response) setLastStory(response.result);
-                else localStorage.setItem(data.value.storageKeys.lastStory, undefined);
-            })
-            .catch(console.error());
+            .then((response) => response && setLastStory(response.result))
+            .catch((error) => console.error(error));
         }
         
     }, [data.value.storageKeys.lastStory]);

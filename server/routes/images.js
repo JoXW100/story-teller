@@ -27,22 +27,49 @@ router.get("/get", async (request, response) =>
     const params = {
         id: request.query.id
     }
-
-    const schema = Joi.object({
-        id: objectID
-    });
     
-    if (Validate.params(params, response) && Validate.schema(params, schema, response))
+    if (Validate.params(params, response))
     {
         try 
         {
-            return DBHandler.images.get(params.id).pipe(response);
+            let stream = DBHandler.images.get(params.id);
+            stream.on("error", () => Validate.failure(response));
+            return stream.pipe(response);
         } 
         catch (error) 
         {
             console.error(error);
             return Validate.failure(response);
         }
+    }
+});
+
+router.get("/getData", async (request, response) => 
+{
+    const params = {
+        id: request.query.id
+    }
+    
+    if (Validate.params(params, response))
+    {
+        let result = await DBHandler.images.getData(params.id);
+        return result ? Validate.success(response, result)
+                      : Validate.failure(response);
+    }
+});
+
+router.delete("/remove", async (request, response) => 
+{
+    const schema = Joi.object({
+        id: objectID
+    });
+    
+    if (Validate.schema(request.body, schema, response))
+    {
+        let result = await DBHandler.images.remove(request.body.id);
+
+        return result ? Validate.success(response, result)
+                      : Validate.failure(response);
     }
 });
 

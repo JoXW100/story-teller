@@ -114,6 +114,27 @@ class DBDocumentsInterface
             return false;
         }
     }
+
+    /**
+     * Sets a field for all documents, can be used to add a new field
+     * @param {string} name The name of the property
+     * @param {*} value The value of the property
+     * @returns {Promise<boolean>} IF the property was set
+     */
+    async setField(name, value)
+    {
+        try
+        {
+            let change = { $set: { [name]: value } }
+            let result = await this.#collection.updateMany({}, change);
+            return result.modifiedCount > 0;
+        }
+        catch (error)
+        {
+            console.error(error);
+            return false;
+        }
+    }
 }
  
 export default DBDocumentsInterface;
