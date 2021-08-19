@@ -16,7 +16,7 @@ class DocumentsCommunication
      */
     async add()
     {
-        return await put(`${this.#url}/add`, { data: { name: "Name", short: "A document about...", title: "Title", body: "Body" }});
+        return await put(`${this.#url}/add`, { data: { name: "Name", short: "A document about...", images: [], title: "Title", body: "Body" }});
     }
     
     /**

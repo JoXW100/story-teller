@@ -9,7 +9,7 @@ export const toImageDictionary = (index) => ({
         toComponent: (content, index) => {
             let targetArgs = content.find((value) => typeof(value) === "string" && value.match(/\[(.*?)\]/));
             let imageID = targetArgs?.substring(1, targetArgs.length - 1);
-            return <DocumentImage key={index} srcID={imageID}/>;
+            return <DocumentImage key={index} imageID={imageID}/>;
         }
     },
     "</image>": { 
@@ -17,17 +17,22 @@ export const toImageDictionary = (index) => ({
     }
 });
 
-const DocumentImage = ({ srcID }) => 
+/**
+ * @param {{ imageID: string }} 
+ * @returns {React.ReactChild}
+ */
+const DocumentImage = ({ imageID }) => 
 {
     const [image, setImage] = useState();
     const placeholder = window.location.origin + "/images/placeholder.png";
+    const validID = (id) => id && id.length == 24;
 
     useEffect(() => 
     {
-        srcID && Server.images.get(srcID)
+        validID(imageID) && Server.images.get(imageID)
         .then((response) => response && setImage(response))
         .catch(console.error());
-    }, [srcID])
+    }, [imageID])
 
     return <div className="documentImageContainer">
         <img alt={""} src={(image && URL.createObjectURL(image)) || placeholder} className="documentImage"/>

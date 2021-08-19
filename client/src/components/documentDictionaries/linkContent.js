@@ -20,14 +20,19 @@ export const toLinkContentDictionary = (index) => ({
     }
 })
 
-const DocumentLinkContent = ({targetID}) => 
+/**
+ * @param {{ targetID: string }} 
+ * @returns {React.ReactChild}
+ */
+const DocumentLinkContent = ({ targetID }) => 
 {
     /** @type {[StoryDocument, React.Dispatch<React.SetStateAction<Story>>]} */
     const [document, setDocument] = useState(undefined);
+    const validID = (id) => id && id.length == 24;
 
     useEffect(() => 
     {
-        Server.documents.get(targetID)
+        validID(targetID) && Server.documents.get(targetID)
         .then((response) => response && setDocument(response.result))
         .catch(console.error());
     }, [targetID, window.localStorage.href])

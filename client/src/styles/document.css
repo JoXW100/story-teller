@@ -190,11 +190,15 @@
 }
 
 .documentHeader3 {
+    display: flex;
+    justify-content: center;
     color: black;
     font-weight: bold;
     font-size: larger;
     margin-top: 5px;
     margin-bottom: 5px;
+    width: 100%;
+    flex: 1;
 }
 
 .documentHeader4 {
@@ -235,19 +239,15 @@
     height: fit-content;
     justify-content: center;
     flex: 1;
+    flex-direction: column;
     width: 100%;
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
 .documentLink {
-    display: inline-block;
     color: rgb(60, 106, 150);
     text-decoration: none;
-    width: fit-content;
-    height: fit-content;
-    margin-left: 5px;
-    margin-right: 5px;
     font-weight: 400;
 }
 
@@ -292,19 +292,12 @@
 .documentAlign {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .documentAlign > * {
     margin: 5px;
     display: flex;
-}
-
-.documentBold {
-    font-weight: bold;
-    display: inline-block;
-    margin-left: 5px;
-    margin-right: 5px;
 }
 
 .documentGroup {
@@ -344,4 +337,26 @@
 .documentFill {
     width: 100%;
     flex: 1;
+}
+
+.documentNode {
+    display: block;
+}
+
+.documentNode > * {
+    flex: 1;
+}
+
+.documentNodeSubNodes {
+    display: flex;
+    flex-direction: row;
+}
+
+.documentNodeSubNodes > * {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.documentNodeSubNodes > *:last-child {
+    margin-right: 0;
 }

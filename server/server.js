@@ -4,6 +4,7 @@ import DBHandler from './db/dbHandler.js';
 import stories from './routes/stories.js';
 import documents from './routes/documents.js';
 import images from './routes/images.js';
+import { ObjectId } from 'mongodb';
 
 DBHandler.connect()
 .catch((error) => console.error(error))

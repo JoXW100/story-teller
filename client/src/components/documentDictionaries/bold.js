@@ -5,20 +5,9 @@ export const toBoldDictionary = (index) => ({
     "<bold>": { 
         cmp: index,  
         type: "bold", 
-        toComponent: (content, index) => <DocumentBold key={index}> {content} </DocumentBold>
+        toComponent: (content, index) => <b key={index}> {content} </b>
     },
     "</bold>": { 
         cmp: -index
     }
 });
-
-const DocumentBold = ({children}) => 
-{
-    return (
-        <div className="documentBold"> 
-            {children} 
-        </div>
-    )
-}
-
-export default DocumentBold;

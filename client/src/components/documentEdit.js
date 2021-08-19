@@ -58,7 +58,7 @@ const DocumentEdit = ({ document, onChange }) =>
         setBody(document.data.body);
     }, [document]);
 
-    useEffect(save, [name, short, images, title, body]);
+    useEffect(() => save().catch(console.error()), [name, short, images, title, body]);
 
     return (
         <div className="editBackground">
@@ -166,7 +166,6 @@ const FileSection = ({ text, images, setImages, removeImage }) =>
     /** @param {React.ChangeEvent<HTMLInputElement>} e */
     const handleFileChanged = (e) => 
     {
-        console.log(e.target.files[0]);
         Server.images.add(e.target.files[0])
         .then((response) => response && setImages([...images, response.result]))
         .catch(console.error());
