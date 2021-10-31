@@ -27,7 +27,7 @@ export const toLinkDictionary = (index) => ({
 const DocumentLink = ({ targetID, children }) => 
 {
     const href = window.location.href.split(/\//);
-    const validID = (id) => id && id.length == 24;
+    const validID = (id) => id && id.length === 24;
 
     return (
         targetID && targetID.startsWith("http") ?

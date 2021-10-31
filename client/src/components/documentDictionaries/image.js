@@ -25,7 +25,7 @@ const DocumentImage = ({ imageID }) =>
 {
     const [image, setImage] = useState();
     const placeholder = window.location.origin + "/images/placeholder.png";
-    const validID = (id) => id && id.length == 24;
+    const validID = (id) => id && id.length === 24;
 
     useEffect(() => 
     {

@@ -7,6 +7,7 @@
     box-sizing: border-box;
     border: 1px solid #373f4e;
     white-space: pre-line;
+    width: 1024px;
     max-width: 1024px;
     overflow-y: overlay;
 }
@@ -141,6 +142,7 @@
     color: black;
     font-weight: bold;
     border: 1px solid black;
+    box-sizing: border-box;
     border-radius: 0;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
@@ -160,6 +162,7 @@
     display: flex;
     align-self: center;
     flex: 1;
+    overflow-y: auto;
 }
 
 .documentTitle {
@@ -191,6 +194,7 @@
 
 .documentHeader3 {
     display: flex;
+    border-bottom: 1px solid black;
     justify-content: center;
     color: black;
     font-weight: bold;
@@ -235,14 +239,14 @@
     background-color: rgba(154, 179, 211, 0.5);
     text-align: center;
     white-space: nowrap;
-    min-width: fit-content;
     height: fit-content;
     justify-content: center;
-    flex: 1;
     flex-direction: column;
+    flex: 1;
     width: 100%;
     margin-top: 10px;
     margin-bottom: 10px;
+    padding: 5px;
 }
 
 .documentLink {
@@ -339,24 +343,20 @@
     flex: 1;
 }
 
-.documentNode {
+.documentTreeRoot {
     display: block;
 }
 
-.documentNode > * {
-    flex: 1;
+.documentTreeNode {
+    display: block;
 }
 
-.documentNodeSubNodes {
-    display: flex;
-    flex-direction: row;
-}
-
-.documentNodeSubNodes > * {
-    display: inline-block;
-    margin-right: 10px;
-}
-
-.documentNodeSubNodes > *:last-child {
-    margin-right: 0;
+.documentCircle {
+    background-color: rgba(154, 179, 211, 0.5);
+    border: 1px solid black;
+    box-sizing: border-box;
+    border-radius: 100%;
+    padding: 5px;
+    align-items: center;
+    justify-content: center;
 }

@@ -62,14 +62,7 @@
 
 .OptionContainer {
     display: block;
-    align-items: center;
-    justify-content: center;
-    justify-items: center;
-    flex-direction: column;
     border: 2px solid white;
-    position: absolute;
-    bottom: 100px;
-    width: 100vh;
 }
 
 .MainImage {

@@ -1,6 +1,6 @@
-import React, { Dispatch, SetStateAction } from 'react';
-import '../@types';
+import React from 'react';
 import ContextMenu from './contextMenu';
+import '../@types';
 
 /**
  * @typedef DataJSON
@@ -10,23 +10,18 @@ import ContextMenu from './contextMenu';
 /**
  * @typedef DataState
  * @property {DataJSON} value
- * @property {Dispatch<SetStateAction<DataJSON>>} set
+ * @property {React.Dispatch<React.SetStateAction<DataJSON>>} set
  */
 
 /**
  * @typedef MenuState
  * @property {ContextMenuParams} value
- * @property {Dispatch<SetStateAction<ContextMenuParams>>} set
+ * @property {React.Dispatch<React.SetStateAction<ContextMenuParams>>} set
  */
 
 /**
  * @typedef Context
  * @type {[ data: DataState, story: MenuState ]}
- */
-
-/**
- * @typedef ContextMenuParams
- * @type {{ active: boolean, x: number, y:number, options: [{ name: string, action: () => void }]}}
  */
 
 /** @type {React.Context<Context>} */

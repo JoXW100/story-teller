@@ -5,7 +5,7 @@ export const toNodeDictionary = (index) => ({
     "<node>": { 
         cmp: index,  
         type: "node", 
-        toComponent: (content, index) => <DocumentNode key={index} content={content}/> 
+        toComponent: (content, index) => <DocumentTreeNode key={index} content={content}/> 
     },
     "</node>": { 
         cmp: -index 
@@ -17,20 +17,20 @@ export const toNodeDictionary = (index) => ({
  * @param {{ content: [React.ReactNode] }} 
  * @returns {React.ReactNode}
  */
-const DocumentNode = ({ content }) => 
+const DocumentTreeNode = ({ content }) => 
 {
     const [subNodes, items] = content.reduce(([pass, fail], elem) => (
-        elem.type?.name === "DocumentNode" 
+        elem.type?.name === "documentTreeNode" 
             ? [[...pass, elem], fail] 
             : [pass, [...fail, elem]]
     ), [[], []]);
-
-    return (
-        <div className="documentNode"> 
+        
+    return ( // {subNodes.length > 0 && <div className="documentNodeSubNodes"> {subNodes} </div>} 
+        <div className="documentTreeNode"> 
             {items}
-            {subNodes.length > 0 && <div className="documentNodeSubNodes"> {subNodes} </div>}
+            
         </div>
     )
 }
 
-export default DocumentNode;
+export default DocumentTreeNode;

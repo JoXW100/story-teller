@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import DocumentEdit from './documentEdit';
 import DocumentRender from './documentRender';
 import Server from '../server/server';
@@ -20,7 +20,7 @@ const Document = ({ id, editEnabled }) =>
             .catch(console.error())
             .finally(() => setLoading(false));
         }
-    }, [document, loading, setLoading, setPreview]);
+    }, [id, document, loading, setLoading, setPreview]);
 
     useEffect(() => 
     {

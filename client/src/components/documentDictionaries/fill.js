@@ -5,18 +5,18 @@ export const toFillDictionary = (index) => ({
     "<fill>": { 
         cmp: index,  
         type: "fill", 
-        toComponent: (content, index) => <DocumentFill key={index}> {content} </DocumentFill>
+        toComponent: (content, index) => <DocumentFill key={index} content={content}/>
     },
     "</fill>": { 
         cmp: -index 
     }
 });
 
-const DocumentFill = ({children}) => 
+const DocumentFill = ({ content }) => 
 {
     return (
         <div className="documentFill"> 
-            {children} 
+            {content} 
         </div>
     )
 }

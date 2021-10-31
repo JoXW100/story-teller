@@ -16,7 +16,9 @@ import {
     toVGroupDictionary,
     toImageDictionary,
     toFillDictionary,
-    toNodeDictionary
+    toNodeDictionary,
+    toCircleDictionary,
+    toTreeDictionary
 } from './documentDictionaries';
 
 const tagList = [
@@ -35,7 +37,9 @@ const tagList = [
     toVGroupDictionary,
     toImageDictionary,
     toFillDictionary,
-    toNodeDictionary
+    toNodeDictionary,
+    toCircleDictionary,
+    toTreeDictionary
 ]
 
 let tagDictionary = {};
@@ -60,8 +64,10 @@ const DocumentRender = ({ document }) =>
         }];
 
         list.forEach((part) => {
+
             part = part.trim();
             if (part === "" || part === " ") return;
+
             let lookup = tagDictionary[part];
             let parent = parentStack[parentStack.length - 1];
             if (lookup)
@@ -81,13 +87,19 @@ const DocumentRender = ({ document }) =>
             }
         });
 
-        return parentStack[0];
+        return parentStack;
     }
 
-    const buildBody = (node, index) => 
+    const buildBody = (parents, index) => 
+    {
+        if (parents.length !== 1) return `Missing closing node: </${parents[parents.length - 1].type}>`;
+        return buildBodyHelper(parents[0], 0);
+    }
+
+    const buildBodyHelper = (node, index) => 
     {
         if (node.type === "text") return node.text;
-        return node.toComponent(node.content.map((item, index) => buildBody(item, index)), index);
+        return node.toComponent(node.content.map((item, index) => buildBodyHelper(item, index)), index);
     }
 
     const documentToBody = () => 

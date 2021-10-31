@@ -18,34 +18,10 @@ const DocumentEdit = ({ document, onChange }) =>
     const [isSaving, setIsSaving]  = useState(false);
     const [savingQueue, setSavingQueue] = useState(false);
 
-    const save = async () => 
-    {
-        if (isSaving)
-        {
-            setSavingQueue(true);
-            return false;
-        }
-        else
-        {
-            let data = { name: name, short: short, images: images, title: title, body: body }
-            let response = await Server.documents.update(document._id, data);
-            setIsSaving(false);
-            if (!response) console.log("Failed Saving");
-            if (savingQueue)
-            {
-                setSavingQueue(false);
-                return await save();
-            }
-
-            onChange();
-            return true;
-        }
-    }
-
     const removeImage = (index) => 
     {
         Server.images.remove(images[index])
-        .then((response) => response && setImages(images.filter((_, i) => i != index)))
+        .then((response) => response && setImages(images.filter((_, i) => i !== index)))
         .catch(console.error());
     }
 
@@ -58,7 +34,31 @@ const DocumentEdit = ({ document, onChange }) =>
         setBody(document.data.body);
     }, [document]);
 
-    useEffect(() => save().catch(console.error()), [name, short, images, title, body]);
+    useEffect(() => 
+    {
+        const save = async () => 
+        {
+            if (isSaving)
+            {
+                setSavingQueue(true);
+                return false;
+            }
+            else
+            {
+                let data = { name: name, short: short, images: images, title: title, body: body }
+                let response = await Server.documents.update(document._id, data);
+                
+                setIsSaving(false);
+
+                if (!response) console.log("Failed Saving");
+                if (savingQueue) return await save();
+
+                onChange();
+                return true;
+            }
+        }
+        save().catch(console.error());
+    }, [name, short, images, title, body]);
 
     return (
         <div className="editBackground">

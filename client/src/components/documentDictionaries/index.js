@@ -14,3 +14,5 @@ export * from './vGroup';
 export * from './image';
 export * from './fill';
 export * from './node';
+export * from './circle';
+export * from './tree';

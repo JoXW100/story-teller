@@ -1,6 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { ContextMenuParams } from './appContext'
-import '../styles/contextMenu.css'
+import React, { useCallback, useEffect } from 'react';
+import '../styles/contextMenu.css';
+
+/**
+ * @typedef ContextMenuParams
+ * @type {{ active: boolean, x: number, y:number, options: [{ name: string, action: () => void }]}}
+ */
 
 /**
  * 
@@ -15,7 +19,7 @@ const ContextMenu = ({state, setState}) =>
     {
         document.addEventListener("click", clickHandler, true);
         return () => document.removeEventListener("click", clickHandler, true);
-    }, []);
+    });
 
     return state.active ? (
         <div id="contextMenu" style={{ left: state.x, top: state.y }}>
