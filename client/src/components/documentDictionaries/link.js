@@ -10,8 +10,8 @@ export const toLinkDictionary = (index) => ({
         {
             let itemIndex = content.findIndex((value) => typeof(value) === "string" && value.match(/\[(.*?)\]/));
             let targetID = content[itemIndex]?.split(/\[(.*?)\]/)[1];
-
             content[itemIndex] = content[itemIndex]?.replace(`[${targetID}]`, "").trim();
+            
             return <DocumentLink key={index} targetID={targetID}> {content} </DocumentLink>; 
         }
     },

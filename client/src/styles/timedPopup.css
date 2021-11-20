@@ -1,0 +1,50 @@
+.timedPopupController {
+    display: block;
+    position: absolute;
+    width: 300px;
+    left: 100px;
+    top: 100px;
+    bottom: 100px;
+    z-index: 100;
+    overflow-y: clip;
+}
+
+.timedPopupController:first-child {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-top: 1px solid black;
+}
+
+.timedPopup:last-child {
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.timedPopup {
+    display: block;
+    width: 100%;
+    flex: 1;
+    height: fit-content;
+    color: black;
+    background-color: rgb(255, 255, 255);
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    box-sizing: border-box;
+    padding: 10px;
+    text-align: center;
+    justify-content: center;
+    white-space: pre-line;
+}
+
+.rollPopup {
+    display: block;
+}
+
+.rollPopup:first-line {
+    color: black;
+    font-weight: bold;
+    font-size: larger;
+    border-bottom: 1px solid black;
+    margin-bottom: 5px;
+}

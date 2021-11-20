@@ -16,3 +16,4 @@ export * from './fill';
 export * from './node';
 export * from './circle';
 export * from './tree';
+export * from './roll';

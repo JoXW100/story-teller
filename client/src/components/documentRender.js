@@ -18,7 +18,8 @@ import {
     toFillDictionary,
     toNodeDictionary,
     toCircleDictionary,
-    toTreeDictionary
+    toTreeDictionary,
+    toRollDictionary
 } from './documentDictionaries';
 
 const tagList = [
@@ -39,7 +40,8 @@ const tagList = [
     toFillDictionary,
     toNodeDictionary,
     toCircleDictionary,
-    toTreeDictionary
+    toTreeDictionary,
+    toRollDictionary
 ]
 
 let tagDictionary = {};

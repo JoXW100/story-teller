@@ -9,7 +9,9 @@
     white-space: pre-line;
     width: 1024px;
     max-width: 1024px;
+    min-width: 1024px;
     overflow-y: overlay;
+    overflow-x: overlay;
 }
 
 .editBackground {
@@ -19,9 +21,11 @@
     background-color: rgb(188, 196, 212);
     margin: 5px;
     min-height: fit-content;
+    min-width: 700px;
     box-sizing: border-box;
     border: 1px solid #373f4e;
     overflow-y: auto;
+    overflow-x: overlay;
 }
 
 .groupSection {
@@ -301,7 +305,6 @@
 
 .documentAlign > * {
     margin: 5px;
-    display: flex;
 }
 
 .documentGroup {
@@ -352,11 +355,51 @@
 }
 
 .documentCircle {
+    display: flex;
     background-color: rgba(154, 179, 211, 0.5);
     border: 1px solid black;
     box-sizing: border-box;
     border-radius: 100%;
     padding: 5px;
+    margin: auto;
     align-items: center;
     justify-content: center;
+    text-align: center;
+}
+
+.documentRoll {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid black;
+    border-radius: 10px;
+    box-sizing: border-box;
+    text-align: center;
+    white-space: nowrap;
+    height: fit-content;
+    justify-content: center;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    padding: 5px;
+}
+
+.documentRollInner {
+    display: inline-block;
+    background-color: rgba(173, 187, 204, 0.5);
+    border: 1px solid rgb(109, 109, 109);
+    border-radius: 15px;
+    box-sizing: border-box;
+    text-align: center;
+    flex: 1;
+    width: 100%;
+    padding: 5px;
+    user-select: none;
+}
+
+.documentRollInner:hover {
+    background-color: rgba(149, 180, 221, 0.5);
+}
+
+.documentRollInner:active {
+    background-color: rgba(145, 185, 236, 0.5);
 }

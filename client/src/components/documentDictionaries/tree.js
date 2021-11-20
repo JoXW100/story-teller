@@ -47,7 +47,7 @@ class TreeLayer
                 : [pass, [...fail, elem]]
         ), [[], []]);
 
-        this.#nodes = nodes;
+        this.#nodes   = nodes;
         this.#content = content;
 
         console.log(nodes);

@@ -13,7 +13,8 @@ import '../styles/contextMenu.css';
  */
 const ContextMenu = ({state, setState}) => 
 {
-    const clickHandler = useCallback((e) => e.target.className !== "contextMenuItem" && setState({...state, active: false}), [state, setState]);
+    const clickHandler = useCallback((e) => e.target.className !== "contextMenuItem" 
+                      && setState({...state, active: false}), [state, setState]);
 
     useEffect(() => 
     {
