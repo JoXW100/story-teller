@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useContext, useCallback } from 'react';
-import { Context } from './appContext';
-import Server from '../server/server';
-import "../styles/document.css";
+import { Context } from '../appContext';
+import Server from '../../server/server';
+import "../../styles/document.css";
 
 /**
  * 
@@ -15,7 +15,7 @@ const DocumentEdit = ({ document, onChange }) =>
     const [images, setImages] = useState(document.data.images);
     const [title, setTitle] = useState(document.data.title);
     const [body, setBody] = useState(document.data.body);
-    const [isSaving, setIsSaving]  = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [savingQueue, setSavingQueue] = useState(false);
 
     const removeImage = (index) => 
@@ -192,10 +192,10 @@ const FileSection = ({ text, images, setImages, removeImage }) =>
  */
 const FileSectionItem = ({ imageID, index, removeImage }) => 
 {
-    const [_, menu] = useContext(Context);
     /** @type {[data: ImageInfo, setData: (data: ImageInfo) => void]} */
     const [data, setData] = useState();
-
+    const [_, menu] = useContext(Context);
+    
     const download = useRef();
 
     const handleRemove = useCallback(() => removeImage(index), [removeImage, index]);
@@ -225,8 +225,8 @@ const FileSectionItem = ({ imageID, index, removeImage }) =>
         e.preventDefault();
         menu.set({ active: true, x: e.pageX, y: e.pageY, options: 
             [
-                { name: "Remove",  action: handleRemove },
-                { name: "Copy ID", action: handleCopyID },
+                { name: "Remove",   action: handleRemove },
+                { name: "Copy ID",  action: handleCopyID },
                 { name: "Download", action: handleDownload }
             ]});
     }

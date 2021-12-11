@@ -7,9 +7,10 @@
     bottom: 100px;
     z-index: 100;
     overflow-y: clip;
+    pointer-events: none;
 }
 
-.timedPopupController:first-child {
+.timedPopup:first-child {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     border-top: 1px solid black;

@@ -4,27 +4,29 @@ import DocumentLink from './link';
 import DocumentText from './text';
 import DocumentHeader3 from './header3';
 import "../../styles/document.css";
+import DocumentFunctions from '../../classes/documentFunctions';
 
 export const toLinkContentDictionary = (index) => ({
     "<link-content>": { 
         cmp: index,  
         type: "link-content", 
-        toComponent: (content, index) => {
-            let targetArgs = content.find((value) => typeof(value) === "string" && value.match(/\[(.*?)\]/));
-            let targetID = targetArgs?.substring(1, targetArgs.length - 1);
-            return <DocumentLinkContent key={index} targetID={targetID}/>;
-        }
+        toComponent: (content, index) => (
+            <DocumentLinkContent 
+                key={index} 
+                args={DocumentFunctions.contentToArgs(content, 'target')}
+            />
+        )
     },
     "</link-content>": { 
         cmp: -index
     }
-})
+});
 
 /**
- * @param {{ targetID: string }} 
+ * @param {{ args: { target: String } }} 
  * @returns {React.ReactChild}
  */
-const DocumentLinkContent = ({ targetID }) => 
+const DocumentLinkContent = ({ args }) => 
 {
     /** @type {[StoryDocument, React.Dispatch<React.SetStateAction<Story>>]} */
     const [document, setDocument] = useState(undefined);
@@ -32,14 +34,16 @@ const DocumentLinkContent = ({ targetID }) =>
 
     useEffect(() => 
     {
-        validID(targetID) && Server.documents.get(targetID)
+        validID(args.target) && Server.documents.get(args.target)
         .then((response) => response && setDocument(response.result))
         .catch(console.error());
-    }, [targetID])
+
+        return () => setDocument(null);
+    }, [args])
 
     return (
         <div className="documentBox"> 
-            <DocumentLink targetID={targetID}> 
+            <DocumentLink args={args}> 
                 <DocumentHeader3> {document?.data.title} </DocumentHeader3>
                 <DocumentText>
                     {document?.data.short}

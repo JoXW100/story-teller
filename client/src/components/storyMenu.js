@@ -1,8 +1,10 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Context } from './appContext';
 import Server from '../server/server';
-import Document from './document';
-import FileSystem from './fileSystem';
+import Document from './document/document';
+import FileSystem from './fileSystem/fileSystem';
+import DiceMenu from './diceMenu/diceMenu';
+import HistoryMenu from './historyMenu';
 import '../styles/story.css';
 
 /**
@@ -15,6 +17,8 @@ const StoryMenu = ({ history, match }) =>
     const [data, menu] = useContext(Context);
     /** @type {[story: Story, setStory: React.Dispatch<React.SetStateAction<Story>>]} */
     const [story, setStory] = useState(undefined);
+    const [showDiceMenu, setShowDiceMenu] = useState(false);
+    const [showHistoryMenu, setShowHistoryMenu] = useState(false);
     const inEditMode = match.params.editMode === "editMode=true";
 
     const navigate = async (documentKey, editMode) => 
@@ -92,7 +96,8 @@ const StoryMenu = ({ history, match }) =>
         else story.files.push(target);
 
         // Remove from old parent
-        if (parent) parent.content = parent.content.filter((file) => `${file.name}.${file.filetype}` !== `${target.name}.${target.filetype}`);
+        if (parent) parent.content = parent.content.filter((file) => 
+            `${file.name}.${file.filetype}` !== `${target.name}.${target.filetype}`);
         else story.files = story.files.filter((file) => file.name !== target.name);
 
         console.log(parent);
@@ -105,8 +110,10 @@ const StoryMenu = ({ history, match }) =>
     {
         await removeHelper(target);
 
-        if (parent) parent.content = parent.content.filter((file) => `${file.name}.${file.filetype}` !== `${target.name}.${target.filetype}`);
-        else story.files = story.files.filter((file) => `${file.name}.${file.filetype}` !== `${target.name}.${target.filetype}`);
+        if (parent) parent.content = parent.content.filter((file) => 
+            `${file.name}.${file.filetype}` !== `${target.name}.${target.filetype}`);
+        else story.files = story.files.filter((file) => 
+            `${file.name}.${file.filetype}` !== `${target.name}.${target.filetype}`);
 
         await Server.stories.update(match.params.key, undefined, story.files);
 
@@ -197,9 +204,23 @@ const StoryMenu = ({ history, match }) =>
             </div>
             <div className="storyBody">
                 <div className="storyTitle"> 
-                    {story && story.name}
+                    <div className="storyTitleButtonGroup">
+                        <div 
+                            className={"storyTitleButton Dice"}
+                            onClick={() => setShowDiceMenu(!showDiceMenu)}
+                        >
+                            {"Dice"}
+                        </div>
+                        <div 
+                            className={"storyTitleButton History"}
+                            onClick={() => setShowHistoryMenu(!showHistoryMenu)}
+                        >
+                            {"History"}
+                        </div>
+                    </div>
+                    <div className="storyTitleText"> {story && story.name} </div>
                     <div 
-                        className={"storyTitleButton"}
+                        className={"storyTitleButton Edit"}
                         onClick={() => navigate(match.params.doc, !inEditMode)}
                     >
                         {inEditMode ? "Done" : "Edit"}
@@ -207,6 +228,8 @@ const StoryMenu = ({ history, match }) =>
                 </div>
                 <Document id={match.params.doc} editEnabled={inEditMode}/>
             </div>
+            { showDiceMenu && <DiceMenu hide={() => setShowDiceMenu(false)}/>}
+            { showHistoryMenu && <HistoryMenu/>}
         </div>
     );
 }

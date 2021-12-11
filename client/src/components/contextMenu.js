@@ -14,6 +14,7 @@ import '../styles/contextMenu.css';
 const ContextMenu = ({state, setState}) => 
 {
     const clickHandler = useCallback((e) => e.target.className !== "contextMenuItem" 
+                      && state.active
                       && setState({...state, active: false}), [state, setState]);
 
     useEffect(() => 

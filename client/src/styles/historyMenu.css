@@ -1,0 +1,30 @@
+.historyMenu {
+    display: block;
+    position: absolute;
+    top: 120px;
+    right: 20px;
+    width: 300px;
+    height: 620px;
+    z-index: 200;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: white;
+    border: 2px solid black;
+}
+
+.historyEntry {
+    display: block;
+    width: 100%;
+    height: fit-content;
+    color: black;
+    background-color: rgba(154, 179, 211, 0.5);
+    white-space: pre-line;
+    justify-content: center;
+    text-align: center;
+    border-bottom: 1px solid black;
+    box-sizing: border-box;
+}
+
+.historyEntry:first-child {
+    border-top: 1px solid black;
+}

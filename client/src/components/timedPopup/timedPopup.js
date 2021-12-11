@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import '../../styles/timedPopup.css';
 
-const TimedPopup = ({children, duration, startTime, onDone}) =>
+const TimedPopup = ({ children, duration, startTime, onDone }) =>
 {
     useEffect(() => 
     {
