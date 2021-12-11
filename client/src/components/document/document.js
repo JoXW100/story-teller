@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import DocumentEdit from './documentEdit';
 import DocumentRender from './documentRender';
-import Server from '../server/server';
-import "../styles/document.css";
+import Server from '../../server/server';
+import "../../styles/document.css";
 
 const Document = ({ id, editEnabled }) => 
 {

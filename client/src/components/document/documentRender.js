@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import "../styles/document.css";
+import "../../styles/document.css";
 import { 
     toHeader1Dictionary,
     toHeader2Dictionary,
@@ -20,7 +20,7 @@ import {
     toCircleDictionary,
     toTreeDictionary,
     toRollDictionary
-} from './documentDictionaries';
+} from '../documentDictionaries';
 
 const tagList = [
     toHeader1Dictionary,

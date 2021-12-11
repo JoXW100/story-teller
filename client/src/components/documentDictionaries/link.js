@@ -1,44 +1,43 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import DocumentFunctions from '../../classes/documentFunctions';
 import "../../styles/document.css";
 
 export const toLinkDictionary = (index) => ({
     "<link>": { 
         cmp: index,  
         type: "link", 
-        toComponent: (content, index) => 
-        {
-            let itemIndex = content.findIndex((value) => typeof(value) === "string" && value.match(/\[(.*?)\]/));
-            let targetID = content[itemIndex]?.split(/\[(.*?)\]/)[1];
-            content[itemIndex] = content[itemIndex]?.replace(`[${targetID}]`, "").trim();
-            
-            return <DocumentLink key={index} targetID={targetID}> {content} </DocumentLink>; 
-        }
+        toComponent: (content, index) => (
+            <DocumentLink 
+                key={index} 
+                args={DocumentFunctions.contentToArgs(content, 'target')}
+                content={content}
+            />
+        ) 
     },
-    "</link>": { 
+    "</link>": {
         cmp: -index
     }
 });
 
 /**
- * @param {{ targetID: string, children: [React.ReactChild]}} 
+ * @param {{ args: { target: String }, children: [React.ReactChild]}} 
  * @returns {React.ReactChild}
  */
-const DocumentLink = ({ targetID, children }) => 
+const DocumentLink = ({ args, content, children }) => 
 {
-    const href = window.location.href.split(/\//);
     const validID = (id) => id && id.length === 24;
+    const getHREF = () =>
+    {
+        let x = window.location.href.split(/\//);
+        return `${x[0]}/${x[1]}/${x[2]}/${x[3]}/${x[4]}/${validID(args.target) ? args.target : x[5]}/${x[6]}`;
+    }
+
+    console.log(content);
 
     return (
-        targetID && targetID.startsWith("http") ?
-        <a href={targetID} className="documentLink"> {children} </a>
-        :
-        <Link 
-            className="documentLink"
-            to={`/stories/${href[4]}/${validID(targetID) ? targetID : href[5]}/${href[6]}`}
-        > 
-            {children} 
-        </Link>
+        args.target && args.target.startsWith("http") 
+        ? <a href={args.target} className="documentLink"> {content} </a>
+        : <a href={getHREF()} className="documentLink"> {content} {children} </a>
     );
 }
 

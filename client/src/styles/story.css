@@ -15,17 +15,30 @@
     border-bottom: 2px solid white;
     position: sticky;
     top: 0;
-    font-size: x-large;
     padding: 10px;
     font-weight: bold;
     white-space: nowrap;
+    align-items: center;
 }
 
 .storyTitleButton {
-    position: absolute;
     cursor: pointer;
     user-select: none;
+    box-sizing: border-box;
+    border: 1px solid white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    height: fit-content;
+    width: fit-content;
+}
+
+.storyTitleButton.Edit {
     right: 20px;
+    margin-left: auto;
+}
+
+.storyTitleButton.Dice {
+    margin-right: 20px;
 }
 
 .storyTitleButton:hover {
@@ -64,4 +77,16 @@
     text-align: center;
     border-bottom: 2px solid white;
     margin-bottom: 5px;
+}
+
+.storyTitleButtonGroup {
+    display: flex;
+    flex-direction: row;
+    left: 20px;
+    margin-right: auto;
+}
+
+.storyTitleText {
+    font-size: x-large;
+    position: absolute;
 }

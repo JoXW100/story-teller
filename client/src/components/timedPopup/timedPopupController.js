@@ -1,5 +1,6 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useContext, useEffect, useReducer } from 'react';
 import TimedPopup from './timedPopup';
+import { Context } from '../appContext';
 import '../../styles/timedPopup.css';
 
 /**
@@ -12,26 +13,30 @@ export const PopupContext = React.createContext([]);
 
 export const TimedPopupController = ({ children }) => 
 {
+    const [_1, _2, history] = useContext(Context);
+
     const reducer = (state, action) => 
     {
+        let time = Date.now();
         switch(action.type)
         {
             case 'add':
+                history.set({ ...history.value, [time]: action.content });
                 return [
                     ...state, 
                     {
-                        startTime: Date.now(),
+                        startTime: time,
                         duration: action.duration, 
                         content: action.content
                     }
                 ]
             
             case 'del':
-                return state.filter((popup) => popup.startTime + 1000 * popup.duration > Date.now() 
+                return state.filter((popup) => popup.startTime + 1000 * popup.duration > time 
                                             && popup.startTime !== action.time)
             
             case 'update':
-                return state.filter((popup) => popup.startTime + 1000 * popup.duration > Date.now())
+                return state.filter((popup) => popup.startTime + 1000 * popup.duration > time)
 
             default:
                 return state;
