@@ -1,8 +1,9 @@
 import { Db } from 'mongodb';
 import DBConnectionHandler from './dbConnectionHandler.js';
 import DBDocumentsInterface from './dbDocumentsInterface.js';
-import DBImagesInterface from './dbImagesHandler.js';
+import DBAssetFileInterface from './dbAssetFileHandler.js';
 import DBStoriesInterface from './dbStoriesInterface.js';
+import DBAssetInterface from './dbAssetHandler.js';
 
 const testDBName = "StoryTellerTest";
 const dbName = "StoryTeller";
@@ -28,8 +29,11 @@ class DBHandler
     /** @type {DBDocumentsInterface} @private */
     static #documents;
 
-    /** @type {DBImagesInterface} @private */
-    static #images;
+    /** @type {DBAssetInterface} @private */
+    static #assets;
+
+    /** @type {DBAssetFileInterface} @private */
+    static #assetFiles;
 
     /**
      * The interface responsible for handling stories
@@ -51,18 +55,27 @@ class DBHandler
 
     /**
      * The interface responsible for handling images
-     * @type {DBImagesInterface}
+     * @type {DBAssetInterface}
      */
-     static get images()
-     {
-         return this.#images;
-     }
+    static get assets()
+    {
+        return this.#assets;
+    }
+
+    /**
+     * The interface responsible for handling images
+     * @type {DBAssetFileInterface}
+     */
+    static get assetFiles()
+    {
+        return this.#assetFiles;
+    }
 
     /**
      * Establishes a database connection
      * @returns {Promise<Boolean>} If connection was successful
      */
-    static async connect(host = "localhost", port = "27017", url = undefined, isTesting = false)
+    static async connect(host = "localhost", port = "27018", url = undefined, isTesting = false)
     {
         this.#connection = new DBConnectionHandler(url ? url : `mongodb://${host}:${port}`);
         this.#isTesting  = isTesting;
@@ -71,10 +84,11 @@ class DBHandler
         if (client)
         {
             console.log("Connection Successful");
-            this.#database  = client.db(this.#isTesting ? testDBName : dbName);
-            this.#stories   = new DBStoriesInterface(this.#database);
-            this.#documents = new DBDocumentsInterface(this.#database);
-            this.#images    = new DBImagesInterface(this.#database);
+            this.#database = client.db(this.#isTesting ? testDBName : dbName);
+            this.#stories    = new DBStoriesInterface(this.#database);
+            this.#documents  = new DBDocumentsInterface(this.#database);
+            this.#assets     = new DBAssetInterface(this.#database);
+            this.#assetFiles = new DBAssetFileInterface(this.#database);
             return true;
         }
         console.log("Connection Failed");
@@ -92,7 +106,8 @@ class DBHandler
             this.#database = null;
             this.#stories = null;
             this.#documents = null;
-            this.#images = null;
+            this.#assets = null;
+            this.#assetFiles = null;
         });
     }
 

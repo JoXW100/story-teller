@@ -60,9 +60,17 @@ const SelectStory = () =>
             <div className="AppTitle">
                 Select Story
             </div>
-            {Object.values(stories).map((story, index) => 
-                <StoryItem  id={story} key={index} remove={remove}/>
-            )}
+            { stories.length > 0 ?
+                Object.values(stories).map((story, index) => 
+                    <StoryItem  
+                        id={story} 
+                        key={index} 
+                        remove={remove}
+                    />
+                )
+                :
+                "No stories found..."
+            }
         </div>
     );
 }

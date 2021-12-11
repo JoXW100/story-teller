@@ -17,9 +17,17 @@ const upload = multer();
 router.post("/add", upload.single("file"), async (request, response) => 
 {  
     let buffer = new Readable.from(request.file.buffer);
-    let result = await DBHandler.images.add(request.file.originalname, buffer);
+
+    console.log(request);
+    /*
+    let file = await DBHandler.assetFiles.add(name, buffer);
+    if (file)
+    {
+        let result = await DBHandler.assets.add(name)
+    }
     return result ? Validate.success(response, result)
                   : Validate.failure(response);
+    */
 });
 
 router.get("/get", async (request, response) => 
@@ -32,7 +40,29 @@ router.get("/get", async (request, response) =>
     {
         try 
         {
-            let stream = DBHandler.images.get(params.id);
+            let stream = DBHandler.assets.get(params.id);
+            stream.on("error", () => Validate.failure(response));
+            return stream.pipe(response);
+        } 
+        catch (error) 
+        {
+            console.error(error);
+            return Validate.failure(response);
+        }
+    }
+});
+
+router.get("/getFile", async (request, response) => 
+{
+    const params = {
+        id: request.query.id
+    }
+    
+    if (Validate.params(params, response))
+    {
+        try 
+        {
+            let stream = DBHandler.assetFiles.get(params.id);
             stream.on("error", () => Validate.failure(response));
             return stream.pipe(response);
         } 
@@ -52,7 +82,7 @@ router.get("/getData", async (request, response) =>
     
     if (Validate.params(params, response))
     {
-        let result = await DBHandler.images.getData(params.id);
+        let result = await DBHandler.assetFiles.getData(params.id);
         return result ? Validate.success(response, result)
                       : Validate.failure(response);
     }
@@ -66,10 +96,14 @@ router.delete("/remove", async (request, response) =>
     
     if (Validate.schema(request.body, schema, response))
     {
-        let result = await DBHandler.images.remove(request.body.id);
-
-        return result ? Validate.success(response, result)
-                      : Validate.failure(response);
+        let result = await DBHandler.assets.remove(request.body.id);
+        if (result)
+        {
+            result = await DBHandler.assetFiles.remove(result.fileID)
+            return result ? Validate.success(response, result)
+                          : Validate.failure(response);
+        }
+        return Validate.failure(response);
     }
 });
 

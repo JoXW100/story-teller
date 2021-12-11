@@ -3,7 +3,7 @@ import cors from 'cors';
 import DBHandler from './db/dbHandler.js';
 import stories from './routes/stories.js';
 import documents from './routes/documents.js';
-import images from './routes/images.js';
+import assets from './routes/assets.js';
 
 DBHandler.connect()
 .catch((error) => console.error(error))
@@ -24,7 +24,7 @@ const initListeners = () =>
     app.use(cors());
     app.use('/stories', stories);
     app.use('/documents', documents);
-    app.use('/images', images);
+    app.use('/images', assets);
     app.listen(8080, () => console.log("Server Started"));
 }
 

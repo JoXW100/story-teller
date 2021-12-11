@@ -1,8 +1,5 @@
-import { Db, Collection, ObjectId as ObjectID, ObjectId } from 'mongodb';
+import { Db, Collection, ObjectId as ObjectID } from 'mongodb';
 import '../@types.js';
-import DBHandler from './dbHandler.js';
-
-const collectionName = "Stories";
 
 /**
  * Represents the public database interface related to stories
@@ -10,6 +7,8 @@ const collectionName = "Stories";
  */
 class DBStoriesInterface
 {
+    #collectionName = "Stories";
+
     /** @type {Db} @private */
     #database;
 
@@ -24,34 +23,28 @@ class DBStoriesInterface
     constructor(database)
     {
         this.#database = database;
-        this.#collection = this.#database.collection(collectionName);
+        this.#collection = this.#database.collection(this.#collectionName);
     }
 
     /**
      * Adds a story to the database
      * @param {string} name The name of the story to add
-     * @param {ObjectId} introductionKey The key to the introduction document
      * @returns {Promise<?ObjectID>} The id of the story inside the database
      */
-    async add(name, introductionKey)
+    async add(name)
     {
         try
         {
             let request = {
                 name: name,
-                introduction: 
-                {
-                    name: "introduction",
-                    filetype: "doc",
-                    content: ObjectID(introductionKey)
-                },
-                files: [],
+                description: "",
+                defaultDocument: undefined,
                 dateCreated: Date.now(),
                 dateUpdated: Date.now()
             }
 
             let result = await this.#collection.insertOne(request);
-            console.log(`Add: (${name}, ${introductionKey})  => ${result}`);
+            console.log(`Add: (${name})  => ${result.insertedId}`);
             return result.insertedId;
         }
         catch (error)
@@ -64,14 +57,14 @@ class DBStoriesInterface
     /**
      * Gets a story from the database
      * @param {ObjectID} storyID The id of the story to get
-     * @returns {Promise<?Story>} The story
+     * @returns {Promise<?DBStory>} The story
      */
     async get(storyID)
     {
         try
         {
             let result = await this.#collection.findOne({ _id: ObjectID(storyID) });
-            console.log(`Get: ${storyID} => ${result}`);
+            console.log(`Get: ${storyID}`);
             return result;
         }
         catch (error)
@@ -91,7 +84,7 @@ class DBStoriesInterface
         try
         {
             let result = await this.#collection.deleteOne({ _id: ObjectID(storyID) });
-            console.log(`Remove: ${storyID} => ${result}`);
+            console.log(`Remove: ${storyID} => ${result.deletedCount == 1}`);
             return result.deletedCount == 1;
         }
         catch (error)
@@ -103,15 +96,13 @@ class DBStoriesInterface
 
     /**
      * Gets all stories from the database
-     * @returns {Promise<?[string]>} The story
+     * @returns {Promise<?[ObjectID]>} The story
      */
-    async getAll()
+    async getAllIds()
     {
         try
         {
-            let result = await this.#collection.find({})
-                                               .map(x => x._id)
-                                               .toArray();
+            let result = await this.#collection.find().map(x => ObjectID(x._id)).toArray();
             console.log(`GetAll: => ${result}`);
             return result;
         }
@@ -125,44 +116,27 @@ class DBStoriesInterface
     /**
      * Updates a story in the database
      * @param {ObjectID} storyID The id of the story to update
-     * @param {string} name The name of the story
-     * @param {[StoryFile]} files The file structure of the story
+     * @param {StoryUpdateValues} values The values to update
      * @returns {Promise<?boolean>} If the story was updated
      */
-    async update(storyID, name, files)
+    async update(storyID, values)
     {
         try
         {
             let filter = { _id: ObjectID(storyID) }
-            let newValues = { $set: { dateUpdated: Date.now() } }
-
-            if (name)  newValues.$set.name  = name;
-            if (files) newValues.$set.files = files;
+            let newValues = { 
+                $set: { 
+                    ...values,
+                    dateUpdated: Date.now() 
+                } 
+            }
+            
+            // Enforce ObjectID rule
+            if (newValues.$set.defaultDocument) newValues.$set.defaultDocument = ObjectID(newValues.$set.defaultDocument);
 
             let result = await this.#collection.updateOne(filter, newValues);
-            console.log(`Update: (${storyID}, ${name}, ${files}) => ${result}`);
+            console.log(`Update: ${storyID} <= ${values} (${result.modifiedCount == 1})`);
             return result.modifiedCount == 1;
-        }
-        catch (error)
-        {
-            console.error(error);
-            return false;
-        }
-    }
-
-    /**
-     * Sets a field for all documents, can be used to add a new field
-     * @param {string} name The name of the property
-     * @param {*} value The value of the property
-     * @returns {Promise<boolean>} IF the property was set
-     */
-    async setField(name, value)
-    {
-        try
-        {
-            let change = { $set: { [name]: value } }
-            let result = await this.#collection.updateMany({}, change);
-            return result.modifiedCount > 0;
         }
         catch (error)
         {

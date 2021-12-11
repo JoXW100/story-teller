@@ -1,15 +1,15 @@
 import { Db, Collection, ObjectId as ObjectID, GridFSBucket } from 'mongodb';
+import { ReadStream } from 'fs';
 import '../@types.js';
-import * as FileSystem from 'fs';
-
-const collectionName = "Images";
 
 /**
  * Represents the public database interface related to documents
  * @class
  */
-class DBImagesInterface
+class DBAssetFileInterface
 {
+    #collectionName = "Asset.Stream";
+
     /** @type {Db} @private */
     #database;
 
@@ -27,14 +27,14 @@ class DBImagesInterface
     constructor(database)
     {
         this.#database = database;
-        this.#collection = database.collection(`${collectionName}.files`);
-        this.#bucket = new GridFSBucket(this.#database, { bucketName: collectionName });
+        this.#collection = database.collection(`${this.#collectionName}.files`);
+        this.#bucket = new GridFSBucket(this.#database, { bucketName: this.#collectionName });
     }
 
     /**
-     * Adds an image to the database
+     * Adds an asset file to the database
      * @param {string} name 
-     * @param {FileSystem.ReadStream} fileStream
+     * @param {ReadStream} fileStream
      * @returns {Promise<?string>} The database id of the added file
      */
     async add(name, fileStream)
@@ -57,17 +57,17 @@ class DBImagesInterface
     }
 
     /**
-     * Adds an image to the database
-     * @param {ObjectID} id 
-     * @returns {FileSystem.ReadStream} The database id of the added file
+     * Gets an asset file stream from the database
+     * @param {ObjectID} fileID Asset file id
+     * @returns {ReadStream} The assets file stream
      */
-    get(id)
+    get(fileID)
     {
         try 
         {
-            console.log("ID", id);
-            return this.getData(id) 
-                ? this.#bucket.openDownloadStream(ObjectID(id))
+            console.log("ID", fileID);
+            return this.getData(fileID) 
+                ? this.#bucket.openDownloadStream(ObjectID(fileID))
                 : null;
         }
         catch (error)
@@ -78,16 +78,16 @@ class DBImagesInterface
     }
 
     /**
-     * Adds an image to the database
-     * @param {ObjectID} imageID The id of the image
-     * @returns {Promise<?ImageInfo>} The data related to the image
+     * Gets the assets file data from the database
+     * @param {ObjectID} dataID The id of the asset file
+     * @returns {Promise<?DBAssetFileInfo>} The data related to the asset file
      */
-    async getData(imageID)
+    async getData(dataID)
     {
         try 
         {
-            let result = await this.#collection.findOne({ _id: ObjectID(imageID) });
-            console.log(`GetData: ${imageID} => ${result}`);
+            let result = await this.#collection.findOne({ _id: ObjectID(dataID) });
+            console.log(`GetData: ${dataID}`);
             return result;
         }
         catch (error)
@@ -98,16 +98,16 @@ class DBImagesInterface
     }
 
     /**
-     * Removes an image from the database
-     * @param {ObjectID} imageID The id of the image
-     * @returns {Promise<boolean>} If the image was removed or not
+     * Removes an asset file from the database
+     * @param {ObjectID} fileID The id of the file
+     * @returns {Promise<boolean>} If the asset file was removed or not
      */
-    async remove(imageID)
+    async remove(fileID)
     {
         try 
         {
-            let result = await this.#bucket.delete(ObjectID(imageID));
-            console.log(`Remove: ${imageID} => ${result}`);
+            let result = await this.#bucket.delete(ObjectID(fileID));
+            console.log(`Remove: ${fileID} => ${result}`);
             return true;
         }
         catch (error)
@@ -118,5 +118,5 @@ class DBImagesInterface
     }
 }
  
-export default DBImagesInterface;
+export default DBAssetFileInterface;
  

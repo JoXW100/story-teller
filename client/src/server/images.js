@@ -14,10 +14,16 @@ class ImagesCommunication
      * @param {File} file
      * @returns {Promise<?{successful: boolean, result: string}>} The id of the image or null
      */
-    async add(file)
+    async add(file, documentID, type, description)
     {
         let data = new FormData();
         data.append("file", file)
+        data.append("data", JSON.stringify({
+            name: file.name,
+            documentID: documentID,
+            type: type,
+            description: description
+        }))
         return await postFile(`${this.#url}/add`, data);
     }
 

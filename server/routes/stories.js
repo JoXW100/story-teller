@@ -63,7 +63,7 @@ router.get("/getAll", async (request, response) =>
 {
     if (Validate.schema(request.body, Joi.object(), response))
     {
-        let result = await DBHandler.stories.getAll();
+        let result = await DBHandler.stories.getAllIds();
 
         return result ? Validate.success(response, result)
                       : Validate.failure(response);
