@@ -1,5 +1,5 @@
-import DocumentsCommunication from "./documents";
-import ImagesCommunication from "./images";
+import FilesCommunication from "./files";
+import AssetsCommunication from "./assets";
 import StoriesCommunication from "./stories";
 
 const urlConstant = 'http://localhost:8080';
@@ -8,8 +8,8 @@ class Server
 {
     static #url = urlConstant;
     static #stories     = new StoriesCommunication(this.#url);
-    static #documents   = new DocumentsCommunication(this.#url);
-    static #images      = new ImagesCommunication(this.#url);
+    static #files   = new FilesCommunication(this.#url);
+    static #assets  = new AssetsCommunication(this.#url);
 
     static get url() 
     { 
@@ -21,14 +21,14 @@ class Server
         return this.#stories;
     }
 
-    static get documents()
+    static get files()
     {
-        return this.#documents;
+        return this.#files;
     }
 
-    static get images()
+    static get assets()
     {
-        return this.#images;
+        return this.#assets;
     }
 }
 

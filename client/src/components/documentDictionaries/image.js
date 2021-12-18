@@ -33,7 +33,7 @@ const DocumentImage = ({ args }) =>
     {
         if (validID(args.imageID))
         {
-            Server.images.get(args.imageID)
+            Server.assets.get(args.imageID)
             .then((res) => res && setImage(URL.createObjectURL(res)))
             .catch(console.error());
         }

@@ -15,7 +15,7 @@ const Document = ({ id, editEnabled }) =>
         if (!loading)
         {
             setLoading(true);
-            Server.documents.get(id)
+            Server.files.get(id)
             .then((response) => response && setPreview(response.result))
             .catch(console.error())
             .finally(() => setLoading(false));
@@ -24,7 +24,7 @@ const Document = ({ id, editEnabled }) =>
 
     useEffect(() => 
     {
-        if (id) Server.documents.get(id)
+        if (id) Server.files.get(id)
         .then((response) => response && setDocument(response.result) && setPreview(response.result))
         .catch(console.error());
     }, [id, editEnabled])

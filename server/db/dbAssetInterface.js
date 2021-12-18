@@ -81,6 +81,26 @@ class DBAssetInterface
     }
 
     /**
+     * Gets the related assets from the database
+     * @param {ObjectID} documentID The id of the asset to get
+     * @returns {Promise<?[DBAsset]>} The ids of the assets
+     */
+    async getRelated(documentID)
+    {
+        try
+        {
+            let result = await this.#collection.find({ documentID: ObjectID(documentID) }).toArray();
+            console.log(`Get Related: ${documentID}`);
+            return result;
+        }
+        catch (error)
+        {
+            console.error(error);
+            return null;
+        }
+    }
+
+    /**
      * Removes an asset from the database
      * @param {ObjectID} assetID The id of the asset to remove
      * @returns {Promise<?DBAsset>}>} If the asset was removed

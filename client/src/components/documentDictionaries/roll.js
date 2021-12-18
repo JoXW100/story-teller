@@ -56,7 +56,7 @@ const DocumentRoll = ({children, args}) =>
         let text = "";
         let sum = 0;
         for (let index = 0; index < rolls.length; index++) {
-            if (index == 0) text += `(${rolls[index]}`;
+            if (index === 0) text += `(${rolls[index]}`;
             else            text += `, ${rolls[index]}`;
             sum += rolls[index];
         }
@@ -70,7 +70,7 @@ const DocumentRoll = ({children, args}) =>
         let [text1, sum1] = rollToResult(state.dice, state.num);
         let [text2, sum2] = rollToResult(state.dice, state.num);
         let max = Math.max(sum1, sum2);
-        let text = state.dice > 0 && state.mod == 0
+        let text = state.dice > 0 && state.mod === 0
             ? `${text1}\n${text2}\nResult: ${max} = ${max + state.mod}`
             : `${text1}\n${text2}\nResult: ${max} ${state.mod < 0 ? '-' : '+'} ${Math.abs(state.mod)} = ${max + state.mod}`;
         popup.addPopup(<RollPopup header={header} text={text}/>, 4);
@@ -82,7 +82,7 @@ const DocumentRoll = ({children, args}) =>
         let [text1, sum1] = rollToResult(state.dice, state.num);
         let [text2, sum2] = rollToResult(state.dice, state.num);
         let min = Math.min(sum1, sum2);
-        let text = state.dice > 0 && state.mod == 0
+        let text = state.dice > 0 && state.mod === 0
             ? `${text1}\n${text2}\nResult: ${min} = ${min}`
             : `${text1}\n${text2}\nResult: ${min} ${state.mod < 0 ? '-' : '+'} ${Math.abs(state.mod)} = ${min + state.mod}`;
             popup.addPopup(<RollPopup header={header} text={text}/>, 4);
@@ -92,7 +92,7 @@ const DocumentRoll = ({children, args}) =>
     {
         let header = "Rolled:";
         let [text1, sum] = rollToResult(state.dice, state.num);
-        let text = state.dice > 0 && state.mod == 0 
+        let text = state.dice > 0 && state.mod === 0 
             ? `${text1}\nResult: ${sum} = ${sum}`
             : `${text1}\nResult: ${sum} ${state.mod < 0 ? '-' : '+'} ${Math.abs(state.mod)} = ${sum + state.mod}`;
             popup.addPopup(<RollPopup header={header} text={text}/>, 4);
@@ -103,7 +103,7 @@ const DocumentRoll = ({children, args}) =>
         let header = "Rolled (Crit):";
         let [text1, sum1] = rollToResult(state.dice, state.num);
         let [text2, sum2] = rollToResult(state.dice, state.num);
-        let text = state.dice > 0 && state.mod == 0 
+        let text = state.dice > 0 && state.mod === 0 
             ? `${text1}\n${text2}\nResult: ${sum1} + ${sum2} = ${sum1 + sum2}`
             : `${text1}\n${text2}\nResult: ${sum1} + ${sum2} ${state.mod < 0 ? '-' : '+'} ${Math.abs(state.mod)} = ${sum1 + sum2 + state.mod}`;
 

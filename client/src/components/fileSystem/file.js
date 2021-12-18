@@ -1,57 +1,48 @@
-import React, { useCallback, useContext, useState } from 'react';
-import { Context } from '../appContext';
-import FileInput from './fileInput';
+import React from 'react';
+import DocumentFile from './fileTypes/documentFile';
+import FolderFile from './fileTypes/folderFile';
 import '../../styles/files.css';
  
 /**
- * @param {{ data: StoryFileDocument, parent: StoryFile, fileData: import('./fileSystem').FileData, canEdit: boolean}} 
+ * @param {{ 
+ *      data: DBFile,
+ *      storyID: ObjectID,
+ *      navigate: (id: ObjectID) => Promise<void>,
+ *      getSelected: () => void,
+ *      reloadParent: () => void
+ * }} 
  * @returns {React.Component}
  */
-const File = ({ data, parent, fileData, canEdit = true }) => 
+const File = ({ data, storyID, navigate, getSelected, reloadParent}) => 
 {
-    const [_, menu] = useContext(Context);
-    const [typing, setTyping] = useState(false);
-
-    const handleRename = useCallback(() => setTyping(true), [setTyping]);
-    const handleRemove = useCallback(() => fileData.remove(parent, data), [fileData, parent, data]);
-    const handleCopyID = useCallback(() => navigator.clipboard.writeText(data.content), [data]);
-
-    const done = (text) => 
+    switch (data.type) 
     {
-        if (text !== data.name) fileData.rename(parent, data, text);
-        setTyping(false);
-    }
+        case "folder":
+            return (
+                <FolderFile
+                    data={data}
+                    storyID={storyID}
+                    navigate={navigate}
+                    getSelected={getSelected}
+                    reloadParent={reloadParent}
+                />
+            );
 
-    const contextMenu = (e) => 
-    {
-        e.preventDefault();
-        if (canEdit) menu.set({ active: true, x: e.pageX, y: e.pageY, options: 
-            [
-                { name: "Rename", action: handleRename },
-                { name: "Remove", action: handleRemove },
-                { name: "Copy ID", action: handleCopyID }
-            ]});
-    }
+        case "doc":
+            return (
+                <DocumentFile
+                    data={data}
+                    storyID={storyID}
+                    isSelected={getSelected() === data._id}
+                    navigate={navigate}
+                    reloadParent={reloadParent}
+                />
+            );
 
-    const drag = () =>
-    {
-        window.dragData["data"] = { parent: parent, target: data }
+        default:
+            console.error("Unknown Filetype: " + data.type);
+            return null;
     }
-
-    return ( typing ?
-        <FileInput initialText={data.name} setTyping={setTyping} done={done}/>
-        :
-        <div 
-            className={fileData.selected === data.content ? "file selected" : "file"} 
-            onClick={async () => await fileData.nav(data.content)}
-            onContextMenu={contextMenu}
-            onDragStart={drag}
-            draggable={canEdit}
-        > 
-            {`${data.name}.${data.filetype}`}
-        </div>
-    );
 }
 
 export default File;
- 

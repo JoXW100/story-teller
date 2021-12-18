@@ -37,14 +37,6 @@
  */
 
 /**
- * @typedef StoryDocument
- * @property {ObjectID} _id
- * @property {StoryFramework} data
- * @property {number} dateCreated
- * @property {number} dateUpdated
- */
-
-/**
  * @typedef ServerResponse
  * @property {boolean} successful
  * @property {*} result

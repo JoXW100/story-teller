@@ -9,13 +9,28 @@
  */
 
 /**
- * @typedef DBDocument
+ * @typedef DBFolderFileContent
+ * @type {{}}
+ */
+
+/**
+ * @typedef DBDocumentFileContent
+ * @property {string} text
+ * @property {{
+ *      title: string,
+ *      shortText: string,
+ *      fullName: string
+ *  }} data
+ */
+
+/**
+ * @typedef DBFile
  * @property {ObjectID} _id
  * @property {ObjectID} storyID
+ * @property {ObjectID} holderID
+ * @property {string} name
  * @property {string} type
- * @property {string} filePath
- * @property {string} content
- * @property {string} data
+ * @property {DBFolderContent | DBDocumentFileContent} content
  * @property {number} dateCreated
  * @property {number} dateUpdated
  */
@@ -25,6 +40,7 @@
  * @property {ObjectID} _id
  * @property {ObjectID} documentID
  * @property {ObjectID} fileID
+ * @property {string} name
  * @property {string} type
  * @property {string} description
  * @property {number} dateCreated
@@ -48,11 +64,10 @@
  */
 
 /**
- * @typedef DBDocumentUpdateValues
+ * @typedef DBFileUpdateValues
+ * @property {?ObjectID} holderID
  * @property {?string} name
- * @property {?string} filePath
- * @property {?string} content
- * @property {?Object<string,*>} data
+ * @property {?DBFileContent} content
  */
 
 /**

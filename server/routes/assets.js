@@ -38,17 +38,25 @@ router.get("/get", async (request, response) =>
     
     if (Validate.params(params, response))
     {
-        try 
-        {
-            let stream = DBHandler.assets.get(params.id);
-            stream.on("error", () => Validate.failure(response));
-            return stream.pipe(response);
-        } 
-        catch (error) 
-        {
-            console.error(error);
-            return Validate.failure(response);
-        }
+        let result = await DBHandler.assets.get(params.id);
+
+        return result ? Validate.success(response, result)
+                      : Validate.failure(response);
+    }
+});
+
+router.get("/getRelated", async (request, response) => 
+{
+    const params = {
+        id: request.query.id
+    }
+    
+    if (Validate.params(params, response))
+    {
+        let result = await DBHandler.assets.getRelated(params.id);
+
+        return result ? Validate.success(response, result)
+                      : Validate.failure(response);
     }
 });
 

@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import DBHandler from './db/dbHandler.js';
 import stories from './routes/stories.js';
-import documents from './routes/documents.js';
+import files from './routes/files.js';
 import assets from './routes/assets.js';
 
 DBHandler.connect()
@@ -23,8 +23,8 @@ const initListeners = () =>
     app.use(express.urlencoded({ extended: true }));
     app.use(cors());
     app.use('/stories', stories);
-    app.use('/documents', documents);
-    app.use('/images', assets);
+    app.use('/files', files);
+    app.use('/assets', assets);
     app.listen(8080, () => console.log("Server Started"));
 }
 

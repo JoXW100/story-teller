@@ -5,69 +5,73 @@ import "../../styles/document.css";
 
 /**
  * 
- * @param {{ document: StoryDocument }} 
+ * @param {{ document: DBFile }} 
  * @returns 
  */
 const DocumentEdit = ({ document, onChange }) => 
 {
-    const [name, setName] = useState(document.data.name);
-    const [short, setShort] = useState(document.data.short);
-    const [images, setImages] = useState(document.data.images);
-    const [title, setTitle] = useState(document.data.title);
-    const [body, setBody] = useState(document.data.body);
+    const [short, setShort] = useState(document.content.data.shortText);
+    const [title, setTitle] = useState(document.content.data.title);
+    const [body, setBody] = useState(document.content.text);
+    const [images, setImages] = useState([]);
     const [isSaving, setIsSaving] = useState(false);
     const [savingQueue, setSavingQueue] = useState(false);
 
     const removeImage = (index) => 
     {
-        Server.images.remove(images[index])
-        .then((response) => response && setImages(images.filter((_, i) => i !== index)))
-        .catch(console.error());
+        
     }
 
     useEffect(() => 
     {
-        setName(document.data.name);
-        setShort(document.data.short);
-        setImages(document.data.images);
-        setTitle(document.data.title);
-        setBody(document.data.body);
+        Server.assets.getRelated(document._id)
+        .then((response) => response && setImages(response.result))
+        .catch(console.error());
     }, [document]);
 
     useEffect(() => 
     {
-        const save = async () => 
+        //setShort(document.content.data.shortText);
+        //setTitle(document.content.data.title);
+        //setBody(document.content.text);
+    }, [document]);
+
+    useEffect(() => 
+    {
+        const save = (override = false) => 
         {
+            console.log("save...");
             if (isSaving)
             {
-                setSavingQueue(true);
-                return false;
+                setSavingQueue(!override);
             }
-            else
+            if (!isSaving || override)
             {
-                let data = { name: name, short: short, images: images, title: title, body: body }
-                let response = await Server.documents.update(document._id, data);
-                
-                setIsSaving(false);
-
-                if (!response) console.log("Failed Saving");
-                if (savingQueue) return await save();
-
-                onChange();
-                return true;
+                let update = {
+                    ["content.data.shortText"]: short,
+                    ["content.data.title"]: title,
+                    ["content.text"]: body
+                }
+                Server.files.update(document._id, update)
+                .catch(console.error())
+                .finally(() => (savingQueue && save(override = true) & setIsSaving(false)))
+                .then((response) => {
+                    if (!response) console.error("Failed Saving");
+                    if (savingQueue)
+                    {
+                        setSavingQueue(false);
+                        save();
+                    }
+                    onChange();
+                });
             }
         }
-        save().catch(console.error());
-    }, [name, short, images, title, body]);
+        save();
+    }, [short, title, body]);
 
     return (
         <div className="editBackground">
             <GroupSection text="Data">
-                <InputSection 
-                    text="Name" 
-                    value={name} 
-                    setValue={setName} 
-                />
                 <InputSection 
                     text="Short"
                     value={short} 
@@ -166,7 +170,7 @@ const FileSection = ({ text, images, setImages, removeImage }) =>
     /** @param {React.ChangeEvent<HTMLInputElement>} e */
     const handleFileChanged = (e) => 
     {
-        Server.images.add(e.target.files[0])
+        Server.assets.add(e.target.files[0])
         .then((response) => response && setImages([...images, response.result]))
         .catch(console.error());
     }
@@ -202,7 +206,7 @@ const FileSectionItem = ({ imageID, index, removeImage }) =>
     const handleCopyID = useCallback(() => navigator.clipboard.writeText(imageID), [imageID]);
     const handleDownload = useCallback(() => 
     {
-        Server.images.get(imageID)
+        Server.assets.get(imageID)
         .then((response) => {
             if (response)
             {
@@ -215,7 +219,7 @@ const FileSectionItem = ({ imageID, index, removeImage }) =>
 
     useEffect(() => 
     {
-        Server.images.getData(imageID)
+        Server.assets.getData(imageID)
         .then((response) => response && setData(response.result))
         .catch(console.error());
     }, [imageID]);

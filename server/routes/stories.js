@@ -18,11 +18,7 @@ router.put("/add", async (request, response) =>
 
     if (Validate.schema(request.body, schema, response))
     {
-        let data = { name: "Name", short: "A document about...", title: "Title", body: "Body" };
-        let introductionKey = await DBHandler.documents.add(data);
-        if (!introductionKey) return Validate.failure(response);
-
-        let result = await DBHandler.stories.add(request.body.name, introductionKey);
+        let result = await DBHandler.stories.add(request.body.name);
 
         return result ? Validate.success(response, result)
                       : Validate.failure(response);

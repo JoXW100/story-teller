@@ -34,7 +34,7 @@ const DocumentLinkContent = ({ args }) =>
 
     useEffect(() => 
     {
-        validID(args.target) && Server.documents.get(args.target)
+        validID(args.target) && Server.files.get(args.target)
         .then((response) => response && setDocument(response.result))
         .catch(console.error());
 

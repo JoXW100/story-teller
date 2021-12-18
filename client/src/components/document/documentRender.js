@@ -49,14 +49,12 @@ tagList.forEach((toTag, index) => tagDictionary = {...tagDictionary, ...(toTag(i
 
 /**
  * 
- * @param {{ document: StoryDocument }} 
+ * @param {{ document: DBFile }} 
  * @returns {React.Component}
  */
 const DocumentRender = ({ document }) => 
 {
-    const [doc, setDoc] = useState(document);
-
-    const buildTree = (list) => 
+    const buildTree = (document) => 
     {
         let parentStack = [{ 
             cmp: 0, 
@@ -64,7 +62,7 @@ const DocumentRender = ({ document }) =>
             toComponent: (content) => content, 
             content: [] 
         }];
-
+        let list = document.content.text.split(/(<.*?>)/);
         list.forEach((part) => {
 
             part = part.trim();
@@ -103,22 +101,14 @@ const DocumentRender = ({ document }) =>
         if (node.type === "text") return node.text;
         return node.toComponent(node.content.map((item, index) => buildBodyHelper(item, index)), index);
     }
-
-    const documentToBody = () => 
-    {
-        if (!doc || !doc.data || !doc.data.body) return "";
-        return buildBody(buildTree(doc.data.body.split(/(<.*?>)/)));
-    }
-
-    useEffect(() => setDoc(document), [document]);
     
     return (
         <div className="documentBackground">
-            { doc &&
+            { document &&
                 <>
-                    <div className={"documentTitle"}> {doc.data.title} </div>
+                     { document.content.data.title && <div className={"documentTitle"}> {document.content.data.title} </div>}
                     <div className={"documentBody"}> 
-                        {documentToBody()} 
+                        {document && buildBody(buildTree(document))} 
                     </div>
                 </>
             }

@@ -1,9 +1,9 @@
 import { Db } from 'mongodb';
 import DBConnectionHandler from './dbConnectionHandler.js';
-import DBDocumentsInterface from './dbDocumentsInterface.js';
-import DBAssetFileInterface from './dbAssetFileHandler.js';
+import DBFilesInterface from './dbFilesInterface.js';
+import DBAssetFileInterface from './dbAssetFileInterface.js';
 import DBStoriesInterface from './dbStoriesInterface.js';
-import DBAssetInterface from './dbAssetHandler.js';
+import DBAssetInterface from './dbAssetInterface.js';
 
 const testDBName = "StoryTellerTest";
 const dbName = "StoryTeller";
@@ -26,8 +26,8 @@ class DBHandler
     /** @type {DBStoriesInterface} @private */
     static #stories;
 
-    /** @type {DBDocumentsInterface} @private */
-    static #documents;
+    /** @type {DBFilesInterface} @private */
+    static #files;
 
     /** @type {DBAssetInterface} @private */
     static #assets;
@@ -46,11 +46,11 @@ class DBHandler
 
     /**
      * The interface responsible for handling documents
-     * @type {DBDocumentsInterface}
+     * @type {DBFilesInterface}
      */
-    static get documents()
+    static get files()
     {
-        return this.#documents;
+        return this.#files;
     }
 
     /**
@@ -86,7 +86,7 @@ class DBHandler
             console.log("Connection Successful");
             this.#database = client.db(this.#isTesting ? testDBName : dbName);
             this.#stories    = new DBStoriesInterface(this.#database);
-            this.#documents  = new DBDocumentsInterface(this.#database);
+            this.#files      = new DBFilesInterface(this.#database);
             this.#assets     = new DBAssetInterface(this.#database);
             this.#assetFiles = new DBAssetFileInterface(this.#database);
             return true;
@@ -105,7 +105,7 @@ class DBHandler
         {
             this.#database = null;
             this.#stories = null;
-            this.#documents = null;
+            this.#files = null;
             this.#assets = null;
             this.#assetFiles = null;
         });

@@ -22,7 +22,7 @@ class StoriesCommunication
     /**
      * Gets a story from the database
      * @param {string} storyID The database identifer for the story
-     * @returns {Promise<?{successful: boolean, result: Story}>} The story with the given id
+     * @returns {Promise<?{successful: boolean, result: DBStory}>} The story with the given id
      */
     async get(storyID)
     {
