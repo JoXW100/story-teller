@@ -90,10 +90,8 @@ export const addFile = (storyID, holderID, type, then) =>
             name = "newDocument";
             content = { 
                 text: "The document body", 
-                data: {
-                    title: "New Document",
-                    shortText: "a small description"
-                }
+                title: "New Document",
+                shortText: "a small description"
             }
             break;
 
@@ -122,6 +120,13 @@ export const removeFile = (fileID, then) =>
 export const renameFile = (fileID, name, then) => 
 {
     Server.files.update(fileID, { name: name })
+    .catch(console.error())
+    .then(then);
+}
+
+export const setDefaultFile = (storyID, fileID, then) => 
+{
+    Server.stories.update(storyID, { defaultDocument: fileID })
     .catch(console.error())
     .then(then);
 }

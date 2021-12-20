@@ -135,7 +135,7 @@ class DBStoriesInterface
             if (newValues.$set.defaultDocument) newValues.$set.defaultDocument = ObjectID(newValues.$set.defaultDocument);
 
             let result = await this.#collection.updateOne(filter, newValues);
-            console.log(`Update: ${storyID} <= ${values} (${result.modifiedCount == 1})`);
+            console.log(`Update: ${storyID} <= (${result.modifiedCount == 1})`);
             return result.modifiedCount == 1;
         }
         catch (error)

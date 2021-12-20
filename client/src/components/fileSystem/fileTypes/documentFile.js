@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import Server from '../../../server/server';
 import { Context } from '../../appContext';
 import FileInput from '../fileInput';
-import { removeFile, renameFile } from '../fileSystem';
+import { removeFile, renameFile, setDefaultFile } from '../fileSystem';
  
 /**
  * @param {{ 
@@ -36,7 +36,8 @@ const DocumentFile = ({ data, storyID, isSelected, navigate, reloadParent }) =>
         [
             { name: "Rename",  action: () => setTyping(true) },
             { name: "Remove",  action: () => removeFile(data._id, reloadParent) },
-            { name: "Copy ID", action: () => navigator.clipboard.writeText(data._id)}
+            { name: "Copy ID", action: () => navigator.clipboard.writeText(data._id)},
+            { name: "Set Default", action: () => setDefaultFile(storyID, data._id, () => void 0)}
         ]});
     }
 

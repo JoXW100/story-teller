@@ -8,7 +8,7 @@ import '../@types.js';
  */
 class DBAssetFileInterface
 {
-    #collectionName = "Asset.Stream";
+    #collectionName = "Assets.Stream";
 
     /** @type {Db} @private */
     #database;
@@ -35,7 +35,7 @@ class DBAssetFileInterface
      * Adds an asset file to the database
      * @param {string} name 
      * @param {ReadStream} fileStream
-     * @returns {Promise<?string>} The database id of the added file
+     * @returns {Promise<?ObjectID>} The database id of the added file
      */
     async add(name, fileStream)
     {
@@ -47,6 +47,8 @@ class DBAssetFileInterface
                     .on('finish', resolve);
             });
             
+            
+            console.log(`AssetFileAdd: => ${response._id}`);
             return response._id;
         }
         catch (error)
@@ -106,8 +108,8 @@ class DBAssetFileInterface
     {
         try 
         {
-            let result = await this.#bucket.delete(ObjectID(fileID));
-            console.log(`Remove: ${fileID} => ${result}`);
+            await this.#bucket.delete(ObjectID(fileID));
+            console.log(`Remove: ${fileID} => ${true}`);
             return true;
         }
         catch (error)

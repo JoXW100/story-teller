@@ -58,7 +58,7 @@ class Validate
      */
     static success(response, result)
     {
-        console.log("success");
+        //console.log("success");
         response.json({ successful: true, result: result });
         return true;
     }

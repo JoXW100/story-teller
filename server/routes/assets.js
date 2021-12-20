@@ -15,19 +15,26 @@ const objectID = Joi.string().min(24).max(24);
 const upload = multer();
 
 router.post("/add", upload.single("file"), async (request, response) => 
-{  
-    let buffer = new Readable.from(request.file.buffer);
-
-    console.log(request);
-    /*
-    let file = await DBHandler.assetFiles.add(name, buffer);
-    if (file)
-    {
-        let result = await DBHandler.assets.add(name)
+{ 
+    const params = {
+        data: Joi.object(),
+        file: Joi.object()
     }
-    return result ? Validate.success(response, result)
-                  : Validate.failure(response);
-    */
+
+    if (Validate.params(params, response))
+    {
+        let data = JSON.parse(request.body.data);
+        console.log("data", data);
+        let buffer = new Readable.from(request.file.buffer);
+        let assetFileID = await DBHandler.assetFiles.add(data.name, buffer)
+        if (assetFileID)
+        {
+            let result = await DBHandler.assets.add(data.documentID, assetFileID, data.name, data.type, data.description);
+
+            return result ? Validate.success(response, result)
+                          : Validate.failure(response);
+        }
+    }
 });
 
 router.get("/get", async (request, response) => 
@@ -107,7 +114,7 @@ router.delete("/remove", async (request, response) =>
         let result = await DBHandler.assets.remove(request.body.id);
         if (result)
         {
-            result = await DBHandler.assetFiles.remove(result.fileID)
+            result = await DBHandler.assetFiles.remove(result.assetFileID)
             return result ? Validate.success(response, result)
                           : Validate.failure(response);
         }

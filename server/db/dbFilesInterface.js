@@ -84,12 +84,12 @@ class DBFilesInterface
      * @param {ObjectID} storyID The id of the parent story
      * @returns {Promise<?[DBDocument]>} The file ids
      */
-    async getAllFrom(storyID)
+    async getFrom(storyID)
     {
         try
         {
             let result = await this.#collection.find({ storyID: ObjectID(storyID) }).toArray();
-            console.log(`Get All From: ${storyID}`);
+            console.log(`Get From: ${storyID}`);
             return result;
         }
         catch (error)
@@ -102,9 +102,9 @@ class DBFilesInterface
     /**
      * Gets all related file ids from the database
      * @param {ObjectID} fileID The id of the file holder
-     * @returns {Promise<?[DBDocument]>} The file ids
+     * @returns {Promise<?[DBFile]>} The files
      */
-    async getAllChildren(fileID)
+    async getChildren(fileID)
     {
         try
         {
@@ -128,6 +128,8 @@ class DBFilesInterface
     {
         try
         {
+            (await this.getChildren(fileID))?.forEach((file) => this.remove(file._id));
+
             let result = await this.#collection.deleteOne({ _id: ObjectID(fileID) });
             console.log(`Remove: ${fileID} => ${result.deletedCount == 1}`);
             return result.deletedCount == 1;
@@ -160,7 +162,7 @@ class DBFilesInterface
             if (values.holderID) newValues.$set.holderID = ObjectID(values.holderID);
 
             let result = await this.#collection.updateOne(filter, newValues);
-            console.log(`Update: ${fileID} <= ${JSON.stringify(values)} (${result.modifiedCount == 1})`);
+            console.log(`Update: ${fileID} <= (${result.modifiedCount == 1})`);
             return result.modifiedCount == 1;
         }
         catch (error)

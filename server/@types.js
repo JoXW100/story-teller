@@ -1,6 +1,6 @@
 /**
  * @typedef DBStory
- * @property {string} _id
+ * @property {ObjectID} _id
  * @property {string} name
  * @property {string} description
  * @property {?ObjectID} defaultDocument
@@ -16,11 +16,8 @@
 /**
  * @typedef DBDocumentFileContent
  * @property {string} text
- * @property {{
- *      title: string,
- *      shortText: string,
- *      fullName: string
- *  }} data
+ * @property {string} title
+ * @property {string} shortText
  */
 
 /**
@@ -39,7 +36,7 @@
  * @typedef DBAsset
  * @property {ObjectID} _id
  * @property {ObjectID} documentID
- * @property {ObjectID} fileID
+ * @property {ObjectID} assetFileID
  * @property {string} name
  * @property {string} type
  * @property {string} description

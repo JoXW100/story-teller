@@ -21,7 +21,7 @@ class StoriesCommunication
     
     /**
      * Gets a story from the database
-     * @param {string} storyID The database identifer for the story
+     * @param {string} storyID The database identifier for the story
      * @returns {Promise<?{successful: boolean, result: DBStory}>} The story with the given id
      */
     async get(storyID)
@@ -31,7 +31,7 @@ class StoriesCommunication
 
     /**
      * Removes a story from the database
-     * @param {string} storyID The database identifer for the story
+     * @param {string} storyID The database identifier for the story
      * @returns {Promise<?{successful: boolean, result: boolean}>} If the story was removed
      */
     async remove(storyID)
@@ -41,7 +41,7 @@ class StoriesCommunication
 
     /**
      * Gets a story from the database
-     * @param {string} storyID The database identifer for the story
+     * @param {string} storyID The database identifier for the story
      * @returns {Promise<?{successful: boolean, result: [string]}>} The story with the given id
      */
     async getAll()
@@ -51,14 +51,13 @@ class StoriesCommunication
 
     /**
      * Updates a story in the database
-     * @param {string} storyID The database identifer for the story
-     * @param {string} name The story name
-     * @param {[StoryFile]} files
+     * @param {string} storyID The database identifier for the story
+     * @param {DBStoryUpdateValues} data The values to update
      * @returns {Promise<?{successful: boolean, result: boolean}>} If the story was updated
      */
-    async update(storyID, name, files)
+    async update(storyID, data)
     {
-        return await post(`${this.#url}/update`, { id: storyID, story: { name: name, files: files }});
+        return await post(`${this.#url}/update`, { id: storyID, data: data });
     }
 }
 

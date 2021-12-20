@@ -10,16 +10,19 @@ class AssetsCommunication
     }
 
     /**
-     * Adds an image to the database
-     * @param {File} file
-     * @returns {Promise<?{successful: boolean, result: string}>} The id of the image or null
+     * Adds an asset to the database
+     * @param {File} asset The asset to store
+     * @param {ObjectID} documentID The related document
+     * @param {string} type The type of the asset
+     * @param {string} description The description of the asset
+     * @returns {Promise<?{successful: boolean, result: string}>} The id of the asset or null
      */
-    async add(file, documentID, type, description)
+    async add(asset, documentID, type, description)
     {
         let data = new FormData();
-        data.append("file", file)
+        data.append("file", asset)
         data.append("data", JSON.stringify({
-            name:       file.name,
+            name:       asset.name,
             documentID: documentID,
             type: type,
             description: description
@@ -28,19 +31,19 @@ class AssetsCommunication
     }
 
     /**
-     * Gets a file from the database
-     * @param {string} imageID
-     * @returns {Promise<?DBAsset>} The id of the document or null
+     * Gets an asset from the database
+     * @param {string} assetID
+     * @returns {Promise<?{successful: boolean, result: DBAsset}>} The asset data or null
      */
-    async get(imageID)
+    async get(assetID)
     {
-        return await get(`${this.#url}/get`, { id: imageID });
+        return await get(`${this.#url}/get`, { id: assetID });
     }
 
     /**
-     * Gets the ids of related assets
-     * @param {string} documentID
-     * @returns {Promise<?[DBAsset]>} The id of the document or null
+     * Gets the related assets from the database
+     * @param {string} documentID The id of the related document
+     * @returns {Promise<?{successful: boolean, result: [DBAsset]}>} The related assets or null
      */
     async getRelated(documentID)
     {
@@ -58,23 +61,13 @@ class AssetsCommunication
     }
 
     /**
-     * Gets a document from the database
-     * @param {string} fileID The database identifier for the image
-     * @returns {Promise<?{successful: boolean, result: ImageInfo}>} The data about the image with the given id
+     * Removes an asset from the database
+     * @param {string} imageID The database identifier for the asset
+     * @returns {Promise<?{successful: boolean, result: boolean}>} If the asset was removed
      */
-    async getData(fileID)
+    async remove(assetID)
     {
-        return await get(`${this.#url}/getData`, { id: fileID });
-    }
-
-    /**
-     * Removes an image from the database
-     * @param {string} imageID The database identifier for the image
-     * @returns {Promise<?{successful: boolean, result: boolean}>} If the image was removed
-     */
-    async remove(fileID)
-    {
-        return await remove(`${this.#url}/remove`, { id: fileID });
+        return await remove(`${this.#url}/remove`, { id: assetID });
     }
 }
 

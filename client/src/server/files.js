@@ -73,12 +73,12 @@ class FilesCommunication
     /**
      * Updates a file in the database
      * @param {string} fileID The database identifier for the file
-     * @param {Object<string, *>} data The file data
+     * @param {DBFileUpdateValues} data The file update data
      * @returns {Promise<?{successful: boolean, result: boolean}>} If the file was updated
      */
     async update(fileID, data)
     {
-        return await post(`${this.#url}/update`, { id: fileID, data: data});
+        return await post(`${this.#url}/update`, { id: fileID, data: data });
     }
 }
 

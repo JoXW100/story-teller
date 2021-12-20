@@ -106,7 +106,7 @@ const DocumentRender = ({ document }) =>
         <div className="documentBackground">
             { document &&
                 <>
-                     { document.content.data.title && <div className={"documentTitle"}> {document.content.data.title} </div>}
+                     { document.content.title && <div className={"documentTitle"}> {document.content.title} </div>}
                     <div className={"documentBody"}> 
                         {document && buildBody(buildTree(document))} 
                     </div>

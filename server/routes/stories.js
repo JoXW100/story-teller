@@ -70,12 +70,12 @@ router.post("/update", async (request, response) =>
 {
     const schema = Joi.object({
         id: objectID,
-        story: Joi.object()
+        data: Joi.object()
     });
     
     if (Validate.schema(request.body, schema, response))
     {
-        let result = await DBHandler.stories.update(request.body.id, request.body.story.name, request.body.story.files);
+        let result = await DBHandler.stories.update(request.body.id, request.body.data);
 
         return result ? Validate.success(response, result)
                       : Validate.failure(response);

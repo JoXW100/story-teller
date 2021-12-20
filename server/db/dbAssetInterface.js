@@ -7,7 +7,7 @@ import '../@types.js';
  */
 class DBAssetInterface
 {
-    #collectionName = "Asset";
+    #collectionName = "Assets";
 
     /** @type {Db} @private */
     #database;
@@ -28,21 +28,21 @@ class DBAssetInterface
 
     /**
      * Adds an asset to the database
-     * @param {string} name The name of the asset
      * @param {ObjectID} documentID The id of the related document
-     * @param {ObjectID} streamID The id of the file stream
+     * @param {ObjectID} assetFileID The id of the assetFile
+     * @param {string} name The name of the asset
      * @param {string} type The type of asset
      * @param {string} description The asset description
      * @returns {Promise<?ObjectID>} The id of the document inside the database
      */
-    async add(name, documentID, streamID, type, description)
+    async add(documentID, assetFileID, name, type, description)
     {
         try
         {
             let request = {
-                name: name,
                 documentID: ObjectID(documentID),
-                fileID: ObjectID(streamID),
+                assetFileID: ObjectID(assetFileID),
+                name: name,
                 type: type,
                 description: description,
                 dateCreated: Date.now(),
@@ -50,7 +50,7 @@ class DBAssetInterface
             }
             
             let result = await this.#collection.insertOne(request);
-            console.log(`Add: (${data}) => ${result.insertedId}`);
+            console.log(`Add: (${name}) => ${result.insertedId}`);
             return result.insertedId;
         }
         catch (error)
@@ -103,7 +103,7 @@ class DBAssetInterface
     /**
      * Removes an asset from the database
      * @param {ObjectID} assetID The id of the asset to remove
-     * @returns {Promise<?DBAsset>}>} If the asset was removed
+     * @returns {Promise<?DBAsset>}>} The removed asset
      */
     async remove(assetID)
     {
@@ -117,26 +117,6 @@ class DBAssetInterface
         {
             console.error(error);
             return null;
-        }
-    }
-
-    /**
-     * Removes an asset from the database
-     * @param {ObjectID} assetID The id of the asset to remove
-     * @returns {Promise<boolean>} If the asset was removed
-     */
-    async remove(assetID)
-    {
-        try
-        {
-            let result = await this.#collection.deleteOne({ _id: ObjectID(assetID) });
-            console.log(`Remove: ${assetID} => ${result.deletedCount == 1}`);
-            return result.deletedCount == 1;
-        }
-        catch (error)
-        {
-            console.error(error);
-            return false;
         }
     }
 

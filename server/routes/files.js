@@ -53,7 +53,7 @@ router.get("/getAllFrom", async (request, response) =>
     
     if (Validate.params(params, response))
     {
-        let result = await DBHandler.files.getAllFrom(params.id);
+        let result = await DBHandler.files.getFrom(params.id);
 
         return result ? Validate.success(response, result)
                       : Validate.failure(response);
@@ -68,7 +68,7 @@ router.get("/getAllChildren", async (request, response) =>
     
     if (Validate.params(params, response))
     {
-        let result = await DBHandler.files.getAllChildren(params.id);
+        let result = await DBHandler.files.getChildren(params.id);
 
         return result ? Validate.success(response, result)
                       : Validate.failure(response);

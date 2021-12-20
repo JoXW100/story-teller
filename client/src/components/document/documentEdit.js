@@ -10,32 +10,21 @@ import "../../styles/document.css";
  */
 const DocumentEdit = ({ document, onChange }) => 
 {
-    const [short, setShort] = useState(document.content.data.shortText);
-    const [title, setTitle] = useState(document.content.data.title);
+    const [short, setShort] = useState(document.content.shortText);
+    const [title, setTitle] = useState(document.content.title);
     const [body, setBody] = useState(document.content.text);
-    const [images, setImages] = useState([]);
     const [isSaving, setIsSaving] = useState(false);
     const [savingQueue, setSavingQueue] = useState(false);
 
-    const removeImage = (index) => 
-    {
-        
-    }
-
     useEffect(() => 
     {
-        Server.assets.getRelated(document._id)
-        .then((response) => response && setImages(response.result))
-        .catch(console.error());
-    }, [document]);
-
-    useEffect(() => 
-    {
-        //setShort(document.content.data.shortText);
-        //setTitle(document.content.data.title);
-        //setBody(document.content.text);
-    }, [document]);
-
+        setShort(document.content.shortText);
+        setTitle(document.content.title);
+        setBody(document.content.text);
+        setSavingQueue(false);
+        setIsSaving(false);
+    }, [document])
+    
     useEffect(() => 
     {
         const save = (override = false) => 
@@ -48,8 +37,8 @@ const DocumentEdit = ({ document, onChange }) =>
             if (!isSaving || override)
             {
                 let update = {
-                    ["content.data.shortText"]: short,
-                    ["content.data.title"]: title,
+                    ["content.shortText"]: short,
+                    ["content.title"]: title,
                     ["content.text"]: body
                 }
                 Server.files.update(document._id, update)
@@ -79,10 +68,8 @@ const DocumentEdit = ({ document, onChange }) =>
                     multiline={true}
                 />
                 <FileSection
+                    documentID={document._id}
                     text="images"
-                    images={images}
-                    setImages={setImages}
-                    removeImage={removeImage}
                 />
             </GroupSection>
             <GroupSection text="Text" fillScreen={true}>
@@ -160,18 +147,25 @@ const GroupSection = ({ children, text, fillScreen=false }) =>
 
 /**
  * 
- * @param {{ text: string, images: [string], setImages: ([images]) => void, removeImage: (index: number) => void }} 
+ * @param {{ documentID: ObjectID, text: string, setImages: ([DBAsset]) => void, removeImage: (index: number) => void }} 
  * @returns {React.Component}
  */
-const FileSection = ({ text, images, setImages, removeImage }) => 
+const FileSection = ({ documentID, text }) => 
 {
     const ref = useRef();
+    const [files, setFiles] = useState([]);
+
+    const refresh = () => Server.assets.getRelated(documentID)
+        .then((response) => response && setFiles(response.result))
+        .catch(console.error());
+
+    useEffect(refresh, [documentID])
     
     /** @param {React.ChangeEvent<HTMLInputElement>} e */
     const handleFileChanged = (e) => 
     {
-        Server.assets.add(e.target.files[0])
-        .then((response) => response && setImages([...images, response.result]))
+        Server.assets.add(e.target.files[0], documentID, "image", "")
+        .then((response) => response && refresh())
         .catch(console.error());
     }
 
@@ -179,8 +173,8 @@ const FileSection = ({ text, images, setImages, removeImage }) =>
         <div className="inputSection">
             <div className="inputSectionText"> {text} </div>
             <div className="fileSection">
-                {images?.map((imageID, index) => (
-                    <FileSectionItem key={index} index={index} imageID={imageID} removeImage={removeImage}/>
+                {files?.map((asset, index) => (
+                    <FileSectionItem key={index} asset={asset} refresh={refresh}/>
                 ))}
                 <div className="fileSectionItemInput" onClick={() => ref.current.click()}> + Add File</div>
                 <input ref={ref} type="file" onChange={handleFileChanged}/>
@@ -191,22 +185,25 @@ const FileSection = ({ text, images, setImages, removeImage }) =>
 
 /**
  * 
- * @param {{ imageID: string, index: number, removeImage: (index: number) => void }} 
+ * @param {{ asset: DBAsset, refresh: () => void }} 
  * @returns {React.Component}
  */
-const FileSectionItem = ({ imageID, index, removeImage }) => 
+const FileSectionItem = ({ asset, refresh }) => 
 {
-    /** @type {[data: ImageInfo, setData: (data: ImageInfo) => void]} */
-    const [data, setData] = useState();
     const [_, menu] = useContext(Context);
-    
     const download = useRef();
 
-    const handleRemove = useCallback(() => removeImage(index), [removeImage, index]);
-    const handleCopyID = useCallback(() => navigator.clipboard.writeText(imageID), [imageID]);
-    const handleDownload = useCallback(() => 
+    const handleRemove = () => {
+        Server.assets.remove(asset._id)
+        .then((response) => response && refresh())
+        .catch(console.error());
+    }
+
+    const handleCopyID = () => navigator.clipboard.writeText(asset.assetFileID);
+
+    const handleDownload =() => 
     {
-        Server.assets.get(imageID)
+        Server.assets.getFile(asset.assetFileID)
         .then((response) => {
             if (response)
             {
@@ -215,14 +212,7 @@ const FileSectionItem = ({ imageID, index, removeImage }) =>
             }
         })
         .catch(console.error());
-    }, [imageID]);
-
-    useEffect(() => 
-    {
-        Server.assets.getData(imageID)
-        .then((response) => response && setData(response.result))
-        .catch(console.error());
-    }, [imageID]);
+    };
 
     const onContextMenu = (e) => 
     {
@@ -240,8 +230,8 @@ const FileSectionItem = ({ imageID, index, removeImage }) =>
             className="fileSectionItem"
             onContextMenu={onContextMenu}
         >
-            {data ? data.filename : ""}
-            <a ref={download} download={data ? data.filename : ""}/>
+            {asset ? asset.name : ""}
+            <a ref={download} download={asset ? asset.name : ""}/>
         </div>
     );
 }

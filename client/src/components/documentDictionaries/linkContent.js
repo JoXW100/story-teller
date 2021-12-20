@@ -28,7 +28,7 @@ export const toLinkContentDictionary = (index) => ({
  */
 const DocumentLinkContent = ({ args }) => 
 {
-    /** @type {[StoryDocument, React.Dispatch<React.SetStateAction<Story>>]} */
+    /** @type {[DBFile, React.Dispatch<React.SetStateAction<DBFile>>]} */
     const [document, setDocument] = useState(undefined);
     const validID = (id) => id && id.length === 24;
 
@@ -44,9 +44,9 @@ const DocumentLinkContent = ({ args }) =>
     return (
         <div className="documentBox"> 
             <DocumentLink args={args}> 
-                <DocumentHeader3> {document?.data.title} </DocumentHeader3>
+                <DocumentHeader3> {document?.content.title} </DocumentHeader3>
                 <DocumentText>
-                    {document?.data.short}
+                    {document?.content.shortText}
                 </DocumentText>
             </DocumentLink>
         </div>
