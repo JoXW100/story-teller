@@ -100,8 +100,6 @@ const StoryMenu = ({ history, match }) =>
             `${file.name}.${file.filetype}` !== `${target.name}.${target.filetype}`);
         else story.files = story.files.filter((file) => file.name !== target.name);
 
-        console.log(parent);
-
         await Server.stories.update(match.params.key, undefined, story.files);
         await reload();
     }, [story, reload])

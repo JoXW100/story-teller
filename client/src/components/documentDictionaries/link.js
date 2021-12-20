@@ -32,8 +32,6 @@ const DocumentLink = ({ args, content, children }) =>
         return `${x[0]}/${x[1]}/${x[2]}/${x[3]}/${x[4]}/${validID(args.target) ? args.target : x[5]}/${x[6]}`;
     }
 
-    console.log(content);
-
     return (
         args.target && args.target.startsWith("http") 
         ? <a href={args.target} className="documentLink"> {content} </a>

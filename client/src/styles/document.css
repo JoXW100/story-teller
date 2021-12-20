@@ -21,7 +21,7 @@
     background-color: rgb(188, 196, 212);
     margin: 5px;
     min-height: fit-content;
-    min-width: 700px;
+    min-width: 100px;
     box-sizing: border-box;
     border: 1px solid #373f4e;
     overflow-y: auto;

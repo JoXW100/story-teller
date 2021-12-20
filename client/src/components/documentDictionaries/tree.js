@@ -49,8 +49,6 @@ class TreeLayer
 
         this.#nodes   = nodes;
         this.#content = content;
-
-        console.log(nodes);
     }
 
     get length() 

@@ -32,6 +32,8 @@ const DocumentEdit = ({ document, onChange }) =>
         setImages(document.data.images);
         setTitle(document.data.title);
         setBody(document.data.body);
+
+        console.log(document);
     }, [document]);
 
     useEffect(() => 
@@ -166,6 +168,7 @@ const FileSection = ({ text, images, setImages, removeImage }) =>
     /** @param {React.ChangeEvent<HTMLInputElement>} e */
     const handleFileChanged = (e) => 
     {
+        if (!images) images = [];
         Server.images.add(e.target.files[0])
         .then((response) => response && setImages([...images, response.result]))
         .catch(console.error());
