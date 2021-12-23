@@ -25,7 +25,7 @@ export const toImageDictionary = (index) => ({
  */
 const DocumentImage = ({ args }) => 
 {
-    const [image, setImage] = useState(null);
+    const [state, setState] = useState({ image: null });
     const placeholder = window.location.origin + "/images/placeholder.png";
     const validID = (id) => id && id.length === 24;
 
@@ -34,26 +34,23 @@ const DocumentImage = ({ args }) =>
         if (validID(args.imageID))
         {
             Server.assets.getFile(args.imageID)
-            .then((res) => res && setImage(URL.createObjectURL(res)))
+            .then((result) => result && setState({ image: URL.createObjectURL(result) }))
             .catch(console.error());
         }
-        else
-        {
-            setImage(null);
-        }
 
-        return () => setImage(null)
-
-    }, [args])
+        return () => URL.revokeObjectURL(state.image);
+    }, [args]);
 
     return (
         <div 
             className="documentImageContainer"
             style={args.flex ? { flex: args.flex } : {}}
+            key={args.imageID}
         >
             <img
+                key={args.imageID}
                 alt={args.imageID}
-                src={image || placeholder} 
+                src={state.image || placeholder} 
                 className="documentImage"
             />
         </div>

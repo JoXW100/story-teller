@@ -4,7 +4,6 @@ import { AppContext } from './components/appContext';
 import Home from './components/home';
 import SelectStory from './components/selectStory';
 import StoryMenu from './components/storyMenu';
-import { TimedPopupController } from './components/timedPopup/timedPopupController';
 
 const Header = () => {
     return (
@@ -21,34 +20,32 @@ const App = () => {
 
     return (
         <AppContext>
-            <TimedPopupController>
-                <div className="App">
-                    <BrowserRouter>
-                        <Header/>
-                        <Switch>
-                            <Route exact path="/"
-                                render={props => <Home {...props}/>}
-                            />
-    
-                            <Route exact path="/stories/:key"
-                                render={props => <StoryMenu {...props}/>}
-                            />
-    
-                            <Route exact path="/stories/:key/:doc"
-                                render={props => <StoryMenu {...props}/>}
-                            />
-    
-                            <Route exact path="/stories/:key/:doc/:editMode"
-                                render={props => <StoryMenu {...props}/>}
-                            />
-    
-                            <Route exact path="/select"
-                                render={props => <SelectStory {...props}/>}
-                            />
-                        </Switch>
-                    </BrowserRouter>
-                </div>
-            </TimedPopupController>
+            <div className="App">
+                <BrowserRouter>
+                    <Header/>
+                    <Switch>
+                        <Route exact path="/stories/:key/:doc/:editMode"
+                            render={props => <StoryMenu {...props}/>}
+                        />
+
+                        <Route exact path="/stories/:key/:doc"
+                            render={props => <StoryMenu {...props}/>}
+                        />
+
+                        <Route exact path="/stories/:key"
+                            render={props => <StoryMenu {...props}/>}
+                        />
+
+                        <Route exact path="/select"
+                            render={props => <SelectStory {...props}/>}
+                        />
+
+                        <Route exact path="/"
+                            render={props => <Home {...props}/>}
+                        />
+                    </Switch>
+                </BrowserRouter>
+            </div>
         </AppContext>
     );
 }

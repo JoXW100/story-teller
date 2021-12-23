@@ -5,13 +5,20 @@ export const toHeader2Dictionary = (index) => ({
     "<h2>": { 
         cmp: index,  
         type: "header2", 
-        toComponent: (content, index) => (
-            <div className="documentHeader2" key={index}> 
-                {content} 
-            </div>
-        )
+        toComponent: (content, index) => <DocumentHeader2 key={index}> {content} </DocumentHeader2>
     },
     "</h2>": { 
         cmp: -index 
     }
 });
+
+const DocumentHeader2 = ({children}) => 
+{
+    return (
+        <div className="documentHeader2"> 
+            {children} 
+        </div>
+    )
+}
+
+export default DocumentHeader2;

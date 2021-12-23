@@ -8,30 +8,32 @@ import '../../styles/files.css';
  * @param {{ 
  *      storyID: ObjectID,
  *      navigate: (id: ObjectID) => Promise<void>,
- *      getSelected: () => void
+ *      selected: ObjectID
  * }}
  * @returns {React.Component}
  */
-const FileSystem = ({ storyID, navigate, getSelected }) => 
+const FileSystem = ({ storyID, navigate, selected }) => 
 {
-    const [files, setFiles] = useState([]);
-    const [_, menu] = useContext(Context);
-    const menuRef = useRef(null);
+    const [state, setState] = useState({ loading: true, files: []});
+    const { menu } = useContext(Context);
 
-    const reload = () => storyID && getChildFiles(storyID, (response) => response && setFiles(response.result));
+    const reload = () => {
+        setState({ ...state, loading: true });
+        getChildFiles(storyID, (response) => response && setState({ loading: false, files: response.result}));
+    }
 
     useEffect(reload, [storyID])
 
     const contextMenu = (e) => 
     {
         e.preventDefault();
-        if(e.currentTarget != e.target ) return;
-        menu.set({ active: true, x: e.pageX, y: e.pageY, options: 
-            [
-                { name: "Add folder",   action: () => addFile(storyID, storyID, "folder", reload) },
-                { name: "Add document", action: () => addFile(storyID, storyID, "doc", reload)}
-            ]
-        })
+        if(e.currentTarget !== e.target ) return;
+        menu.show({ x: e.pageX, y: e.pageY}, [
+            { name: "Add folder",   action: () => addFile(storyID, storyID, "folder", reload)},
+            { name: "Add document", action: () => addFile(storyID, storyID, "doc", reload)},
+            { name: "Add creature", action: () => addFile(storyID, storyID, "cre", reload)},
+            { name: "Add ability",  action: () => addFile(storyID, storyID, "abi", reload)}
+        ]);
     }
 
     const allowDrop = (e) =>
@@ -42,27 +44,26 @@ const FileSystem = ({ storyID, navigate, getSelected }) =>
     const drop = (e) =>
     {
         e.preventDefault();
-        if(e.currentTarget != e.target ) return;
+        if(e.currentTarget !== e.target ) return;
         moveFile(window.dragData["data"].object, storyID, reload);
     }
 
-    return (
+    return state.loading ? null : (
         <div
             id={"fileMenu"}
             className="fileMenu"
-            ref={menuRef}
             onContextMenu={contextMenu}
             onDragOver={allowDrop}
             onDrop={drop}
         >
             <div className="storyMenuHeader"> Files </div>
-            { files?.sort(fileSort).map((file, index) =>
+            { state.files.sort(fileSort).map((file, index) =>
                 <File
-                    key={files.length + index}
+                    key={file.name + state.files.length + index}
                     data={file}
                     storyID={storyID}
                     navigate={navigate}
-                    getSelected={getSelected}
+                    selected={selected}
                     reloadParent={reload}
                 />
             )}
@@ -85,7 +86,8 @@ export const addFile = (storyID, holderID, type, then) =>
 {
     let content;
     let name;
-    switch (type) {
+    switch (type) 
+    {
         case "doc":
             name = "newDocument";
             content = { 
@@ -98,6 +100,93 @@ export const addFile = (storyID, holderID, type, then) =>
         case "folder":
             name = "newFolder";
             content = {}
+            break;
+
+        case "cre":
+            name = "newCreature";
+            content = {
+                name: "A Creature",
+                shortText: "description",
+                text: "full text",
+                type: "none",
+                size: "none",
+                alignment: "none",
+                portraitID: null,
+                stats: {
+                    level: 0,
+                    hitDice: 0,
+                    armor: 0,
+                    attributes: {
+                        str: 10,
+                        dex: 10,
+                        con: 10,
+                        int: 10,
+                        wis: 10,
+                        cha: 10
+                    },
+                    savingThrows: {
+                        str: 0,
+                        dex: 0,
+                        con: 0,
+                        int: 0,
+                        wis: 0,
+                        cha: 0
+                    },
+                    speed: {
+                        walk: 0,
+                        swim: 0,
+                        fly: 0,
+                        burrow: 0
+                    },
+                    senses: [],
+                    languages: [],
+                    resistances: [],
+                    immunities: [],
+                    advantages: [],
+                    disadvantages: [],
+                    challenge : "none"
+                },
+                abilities: [],
+                spells: {
+                    casterType: "none",
+                    spellSlots: [],
+                    spellIDs: []
+                }
+            }
+            break;
+        
+        case "abi":
+            name = "newAbility";
+            content = {
+                name: "An Ability",
+                shortText: "description",
+                text: "full text",
+                notes: "-",
+                abilityType: "none",
+                actionType: "special",
+                charges: -1,
+                chargeReset: "none",
+                roll: {
+                    scalingModifier: "none",
+                    proficiency: 0,
+                    baseModifier: 0,
+                    diceSize: 20,
+                    diceNum: 1
+                },
+                effect: {
+                    type: "none",
+                    range: "0 ft",
+                    successEffect: "-",
+                    failEffect: "-",
+                    roll: {
+                        scalingModifier: "none",
+                        proficiency: 0,
+                        baseModifier: 0,
+                        diceSize: 20,
+                        diceNum: 1
+                    }
+                }
+            }
             break;
 
         default:

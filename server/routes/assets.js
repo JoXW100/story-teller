@@ -112,13 +112,8 @@ router.delete("/remove", async (request, response) =>
     if (Validate.schema(request.body, schema, response))
     {
         let result = await DBHandler.assets.remove(request.body.id);
-        if (result)
-        {
-            result = await DBHandler.assetFiles.remove(result.assetFileID)
-            return result ? Validate.success(response, result)
-                          : Validate.failure(response);
-        }
-        return Validate.failure(response);
+        return result ? Validate.success(response, result)
+                      : Validate.failure(response);
     }
 });
 

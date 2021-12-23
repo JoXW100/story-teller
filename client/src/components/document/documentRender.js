@@ -1,51 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import CreRenderer from './renders/creRenderer';
+import DocRenderer from './renders/docRenderer';
+import AbiRenderer from './renders/abiRenderer';
+import DocumentAlign from '../documentDictionaries/align';
+import DocumentBox from '../documentDictionaries/box';
+import DocumentFill from '../documentDictionaries/fill';
+import DocumentHeader2 from '../documentDictionaries/header2';
+import DocumentHeader3 from '../documentDictionaries/header3';
+import DocumentHeader4 from '../documentDictionaries/header4';
+import DocumentImage from '../documentDictionaries/image';
+import DocumentLinkContent from '../documentDictionaries/linkContent';
+import DocumentRoll from '../documentDictionaries/roll';
+import DocumentText from '../documentDictionaries/text';
+import DocumentVGroup from '../documentDictionaries/vGroup';
 import "../../styles/document.css";
-import { 
-    toHeader1Dictionary,
-    toHeader2Dictionary,
-    toHeader3Dictionary,
-    toHeader4Dictionary,
-    toBoxDictionary,
-    toLinkDictionary,
-    toLinkContentDictionary,
-    toTextDictionary,
-    toListDictionary,
-    toAlignDictionary,
-    toBoldDictionary,
-    toGroupDictionary,
-    toVGroupDictionary,
-    toImageDictionary,
-    toFillDictionary,
-    toNodeDictionary,
-    toCircleDictionary,
-    toTreeDictionary,
-    toRollDictionary
-} from '../documentDictionaries';
-
-const tagList = [
-    toHeader1Dictionary,
-    toHeader2Dictionary,
-    toHeader3Dictionary,
-    toHeader4Dictionary,
-    toBoxDictionary,
-    toLinkDictionary,
-    toLinkContentDictionary,
-    toTextDictionary,
-    toListDictionary,
-    toAlignDictionary,
-    toBoldDictionary,
-    toGroupDictionary,
-    toVGroupDictionary,
-    toImageDictionary,
-    toFillDictionary,
-    toNodeDictionary,
-    toCircleDictionary,
-    toTreeDictionary,
-    toRollDictionary
-]
-
-let tagDictionary = {};
-tagList.forEach((toTag, index) => tagDictionary = {...tagDictionary, ...(toTag(index + 1))});
 
 /**
  * 
@@ -54,66 +22,70 @@ tagList.forEach((toTag, index) => tagDictionary = {...tagDictionary, ...(toTag(i
  */
 const DocumentRender = ({ document }) => 
 {
-    const buildTree = (document) => 
+    const [state, setState] = useState({ loaded: false, content: null })
+
+    const generateDocument = () => 
     {
-        let parentStack = [{ 
-            cmp: 0, 
-            type: "holder",
-            toComponent: (content) => content, 
-            content: [] 
-        }];
-        let list = document.content.text.split(/(<.*?>)/);
-        list.forEach((part) => {
+        switch (document.type) {
+            case "cre":
+                return <CreRenderer document={document}/>;
 
-            part = part.trim();
-            if (part === "" || part === " ") return;
-
-            let lookup = tagDictionary[part];
-            let parent = parentStack[parentStack.length - 1];
-            if (lookup)
-            {
-                if (lookup.cmp == -parent.cmp) parentStack.pop();
-                else
-                {
-                    if (lookup.cmp < 0) return "An unexpected error ocurred";
-                    let item = {...lookup, content: []};
-                    parent.content.push(item);
-                    parentStack.push(item);
-                }
-            }
-            else
-            {
-                parent.content.push({ type: "text", text: part});
-            }
-        });
-
-        return parentStack;
+            case "abi":
+                return <AbiRenderer document={document}/>;
+        
+            default:
+                return <DocRenderer document={document}/>;
+        }
     }
 
-    const buildBody = (parents, index) => 
-    {
-        if (parents.length !== 1) return `Missing closing node: </${parents[parents.length - 1].type}>`;
-        return buildBodyHelper(parents[0], 0);
-    }
-
-    const buildBodyHelper = (node, index) => 
-    {
-        if (node.type === "text") return node.text;
-        return node.toComponent(node.content.map((item, index) => buildBodyHelper(item, index)), index);
-    }
+    useEffect(() => setState({ loaded: true, content: generateDocument() }), [document])
     
-    return (
-        <div className="documentBackground">
-            { document &&
-                <>
-                     { document.content.title && <div className={"documentTitle"}> {document.content.title} </div>}
-                    <div className={"documentBody"}> 
-                        {document && buildBody(buildTree(document))} 
-                    </div>
-                </>
-            }
-        </div>
-    );
+    return state.loaded ? state.content : null;
+}
+
+export const documentToComponent = (x, key = 0) => 
+{
+    switch (x.type) {
+        
+        case "bold":
+            return <b key={key} children={x.content}/>
+
+        case "text":
+            return <DocumentText key={key} children={x.content.map((y, index) => documentToComponent(y, index))}/>
+        
+        case "v-group":
+            return <DocumentVGroup key={key} children={x.content.map((y, index) => documentToComponent(y, index))}/>
+
+        case "roll":
+            return <DocumentRoll key={key} args={x.args} children={x.content.map((y, index) => documentToComponent(y, index))}/>
+
+        case "align":
+            return <DocumentAlign key={key} children={x.content.map((y, index) => documentToComponent(y, index))}/>
+
+        case "fill":
+            return <DocumentFill key={key} content={x.content.map((y, index) => documentToComponent(y, index))}/>
+        
+        case "box":
+            return <DocumentBox key={key} children={x.content.map((y, index) => documentToComponent(y, index))}/>
+        
+        case "image":
+            return <DocumentImage key={key} args={x.args}/>
+
+        case "link-content":
+            return <DocumentLinkContent key={key} args={x.args}/>
+
+        case "header2":
+            return <DocumentHeader2 key={key} children={x.content}/>
+
+        case "header3":
+            return <DocumentHeader3 key={key} children={x.content}/>
+                
+        case "header4":
+            return <DocumentHeader4 key={key} children={x.content}/>
+
+        default:
+            return x;
+    }
 }
 
 export default DocumentRender;

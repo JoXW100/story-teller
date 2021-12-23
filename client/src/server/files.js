@@ -33,7 +33,7 @@ class FilesCommunication
     /**
      * Gets a file from the database
      * @param {string} fileID The database identifier for the file
-     * @returns {Promise<?{successful: boolean, result: DBDocument}>} The file with the given id
+     * @returns {Promise<?{successful: boolean, result: DBFile}>} The file with the given id
      */
     async get(fileID)
     {
@@ -43,7 +43,7 @@ class FilesCommunication
     /**
      * Gets identifiers of related file from the database
      * @param {string} storyID The database identifier for the related story
-     * @returns {Promise<?{successful: boolean, result: [DBDocument]}>} The files with the given story id
+     * @returns {Promise<?{successful: boolean, result: [DBFile]}>} The files with the given story id
      */
     async getAllFrom(storyID)
     {
@@ -53,7 +53,7 @@ class FilesCommunication
     /**
      * Gets identifiers of related files from the database
      * @param {string} fileID The database identifier for the file holder
-     * @returns {Promise<?{successful: boolean, result: [DBDocument]}>} The files with the given holder id
+     * @returns {Promise<?{successful: boolean, result: [DBFile]}>} The files with the given holder id
      */
     async getAllChildren(fileID)
     {

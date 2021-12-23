@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import Server from '../../../server/server';
 import { Context } from '../../appContext';
 import FileInput from '../fileInput';
 import { removeFile, renameFile, setDefaultFile } from '../fileSystem';
@@ -16,7 +15,7 @@ import { removeFile, renameFile, setDefaultFile } from '../fileSystem';
  */
 const DocumentFile = ({ data, storyID, isSelected, navigate, reloadParent }) => 
 {
-    const [_, menu] = useContext(Context);
+    const { menu } = useContext(Context);
     const [typing, setTyping] = useState(false);
 
     const doneRenaming = (text) => 
@@ -32,13 +31,13 @@ const DocumentFile = ({ data, storyID, isSelected, navigate, reloadParent }) =>
     const contextMenu = (e) => 
     {
         e.preventDefault();
-        menu.set({ active: true, x: e.pageX, y: e.pageY, options: 
-        [
+        if (e.currentTarget !== e.target ) return;
+        menu.show({ x: e.pageX, y: e.pageY }, [
             { name: "Rename",  action: () => setTyping(true) },
             { name: "Remove",  action: () => removeFile(data._id, reloadParent) },
             { name: "Copy ID", action: () => navigator.clipboard.writeText(data._id)},
             { name: "Set Default", action: () => setDefaultFile(storyID, data._id, () => void 0)}
-        ]});
+        ]);
     }
 
     const drag = () =>

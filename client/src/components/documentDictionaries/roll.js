@@ -2,7 +2,6 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import DocumentFunctions from '../../classes/documentFunctions.js';
 import RollPopup from '../diceMenu/rollPopup.js';
 import { Context } from '../appContext';
-import { PopupContext } from '../timedPopup/timedPopupController';
 import "../../styles/document.css";
 
 export const toRollDictionary = (index) => ({
@@ -33,16 +32,15 @@ const DocumentRoll = ({children, args}) =>
         isDmg: false
     });
 
-    const [_, menu] = useContext(Context);
-    const [popup] = useContext(PopupContext);
+    const { menu, popups } = useContext(Context);
 
     useEffect(() => {
-        setState({
+        args && setState({
             mod:  args.mod  ? parseInt(args.mod)    : 0,
             dice: args.dice ? parseInt(args.dice)   : 20,
             num:  args.num  ? parseInt(args.num)    : 1,
             flex: args.flex ? parseFloat(args.flex) : undefined,
-            isDmg: args.isDmg === 'true'
+            isDmg: args.isDmg === 'true' || args.isDmg === true
         });
     }, [args]);
 
@@ -73,8 +71,8 @@ const DocumentRoll = ({children, args}) =>
         let text = state.dice > 0 && state.mod === 0
             ? `${text1}\n${text2}\nResult: ${max} = ${max + state.mod}`
             : `${text1}\n${text2}\nResult: ${max} ${state.mod < 0 ? '-' : '+'} ${Math.abs(state.mod)} = ${max + state.mod}`;
-        popup.addPopup(<RollPopup header={header} text={text}/>, 4);
-    }, [state]);
+        popups.add(<RollPopup header={header} text={text}/>);
+    }, [popups, state]);
 
     const handleDisadvantage = useCallback(() =>
     {
@@ -85,8 +83,8 @@ const DocumentRoll = ({children, args}) =>
         let text = state.dice > 0 && state.mod === 0
             ? `${text1}\n${text2}\nResult: ${min} = ${min}`
             : `${text1}\n${text2}\nResult: ${min} ${state.mod < 0 ? '-' : '+'} ${Math.abs(state.mod)} = ${min + state.mod}`;
-            popup.addPopup(<RollPopup header={header} text={text}/>, 4);
-    }, [state]);
+        popups.add(<RollPopup header={header} text={text}/>);
+    }, [popups, state]);
 
     const handleFlat = useCallback(() =>
     {
@@ -95,8 +93,8 @@ const DocumentRoll = ({children, args}) =>
         let text = state.dice > 0 && state.mod === 0 
             ? `${text1}\nResult: ${sum} = ${sum}`
             : `${text1}\nResult: ${sum} ${state.mod < 0 ? '-' : '+'} ${Math.abs(state.mod)} = ${sum + state.mod}`;
-            popup.addPopup(<RollPopup header={header} text={text}/>, 4);
-    }, [state]);
+        popups.add(<RollPopup header={header} text={text}/>);
+    }, [popups, state]);
 
     const handleCrit = useCallback(() =>
     {
@@ -106,22 +104,21 @@ const DocumentRoll = ({children, args}) =>
         let text = state.dice > 0 && state.mod === 0 
             ? `${text1}\n${text2}\nResult: ${sum1} + ${sum2} = ${sum1 + sum2}`
             : `${text1}\n${text2}\nResult: ${sum1} + ${sum2} ${state.mod < 0 ? '-' : '+'} ${Math.abs(state.mod)} = ${sum1 + sum2 + state.mod}`;
-
-        popup.addPopup(<RollPopup header={header} text={text}/>, 4);
-    }, [state]);
+        popups.add(<RollPopup header={header} text={text}/>);
+    }, [popups, state]);
 
     const onContextMenu = (e) => 
     {
         e.preventDefault();
-        menu.set({ active: true, x: e.pageX, y: e.pageY, options: 
-            state.isDmg ? [
-                { name: "Flat",         action: handleFlat },
-                { name: "Crit",         action: handleCrit }
-            ] : [
-                { name: "Flat",         action: handleFlat },
-                { name: "Advantage",    action: handleAdvantage },
-                { name: "Disadvantage", action: handleDisadvantage }
-            ]});
+        e.stopPropagation();
+        menu.show({ x: e.pageX, y: e.pageY }, state.isDmg ? [
+            { name: "Flat",         action: handleFlat },
+            { name: "Crit",         action: handleCrit }
+        ] : [
+            { name: "Flat",         action: handleFlat },
+            { name: "Advantage",    action: handleAdvantage },
+            { name: "Disadvantage", action: handleDisadvantage }
+        ]);
     }
 
     return (
@@ -132,7 +129,7 @@ const DocumentRoll = ({children, args}) =>
             <div> {children} </div>
             <div
                 className="documentRollInner"
-                onClick={handleFlat}
+                onClick={(e) => e.currentTarget === e.target && handleFlat()}
                 onContextMenu={onContextMenu}
             >
                 {state.isDmg ? (state.mod === 0 ? `${state.num}d${state.dice}`

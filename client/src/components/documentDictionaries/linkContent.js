@@ -3,8 +3,9 @@ import Server from '../../server/server';
 import DocumentLink from './link';
 import DocumentText from './text';
 import DocumentHeader3 from './header3';
-import "../../styles/document.css";
 import DocumentFunctions from '../../classes/documentFunctions';
+import { AbilityFile } from '../document/renders/abiRenderer';
+import "../../styles/document.css";
 
 export const toLinkContentDictionary = (index) => ({
     "<link-content>": { 
@@ -23,34 +24,43 @@ export const toLinkContentDictionary = (index) => ({
 });
 
 /**
- * @param {{ args: { target: String } }} 
+ * @param {{ args: { target: String, attributes: CreatureAttributes, proficiency: number } }} 
  * @returns {React.ReactChild}
  */
 const DocumentLinkContent = ({ args }) => 
 {
-    /** @type {[DBFile, React.Dispatch<React.SetStateAction<DBFile>>]} */
-    const [document, setDocument] = useState(undefined);
+    /** @type {[{ loading: boolean, document: DBFile }, React.Dispatch<React.SetStateAction<DBFile>>]} */
+    const [state, setState] = useState({ loading: true, document: null });
     const validID = (id) => id && id.length === 24;
 
-    useEffect(() => 
+    useEffect(() =>
     {
         validID(args.target) && Server.files.get(args.target)
-        .then((response) => response && setDocument(response.result))
+        .then((response) => response && setState({ loading: false, document: response.result }))
         .catch(console.error());
+    }, [args]);
 
-        return () => setDocument(null);
-    }, [args])
+    const getDisplay = () => 
+    {
+        switch (state.document.type) {
+            case "abi":
+                return <AbilityFile document={state.document} attributes={args.attributes} proficiency={args.proficiency}/>
+        
+            default:
+                return (
+                    <div className="documentBox"> 
+                        <DocumentLink args={args}>
+                            <DocumentHeader3> {state.document.content.title} </DocumentHeader3>
+                            <DocumentText>
+                                {state.document.content.shortText}
+                            </DocumentText>
+                        </DocumentLink>
+                    </div>
+                );
+        }
+    }
 
-    return (
-        <div className="documentBox"> 
-            <DocumentLink args={args}> 
-                <DocumentHeader3> {document?.content.title} </DocumentHeader3>
-                <DocumentText>
-                    {document?.content.shortText}
-                </DocumentText>
-            </DocumentLink>
-        </div>
-    );
+    return state.loading ? null :  getDisplay();
 }
 
 export default DocumentLinkContent;

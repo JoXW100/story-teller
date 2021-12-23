@@ -70,7 +70,7 @@
 }
 
 .inputSectionText {
-    width: 80px;
+    width: 120px;
     margin-left: 5px;
     text-transform: capitalize;
     height: fit-content;
@@ -102,13 +102,8 @@
     border: 1px solid black;
     background-color: white;
     border-radius: 20px;
-    padding: 10px;
-    max-height: 182px;
-}
-
-.fileSection input {
-    visibility: hidden;
-    display: none;
+    padding: 5px;
+    max-height: 140px;
 }
 
 .fileSection > *:first-child {
@@ -116,17 +111,26 @@
     border-top-right-radius: 20px;
 }
 
+.fileSection > *:last-child {
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom: 1px solid black;
+}
+
 .fileSectionItem {
     flex: 1;
     display: inline-flex;
     background-color: white;
     height: 20px;
-    padding: 5px 10px;
+    padding: 4px 10px;
     border-top: 1px solid black;
     border-left: 1px solid black;
     border-right: 1px solid black;
+    border-radius: 0;
+    box-sizing: border-box;
     color: rgb(0, 0, 0);
     text-indent: 10px;
+    font-size: smaller;
     cursor: pointer;
     user-select: none;
 }
@@ -142,9 +146,10 @@
 
 .fileSectionItemInput {
     flex: 1;
-    padding: 5px 20px;
+    padding: 4px 20px;
     color: black;
     font-weight: bold;
+    font-size: smaller;
     border: 1px solid black;
     box-sizing: border-box;
     border-radius: 0;
@@ -332,6 +337,9 @@
     max-height: 100%;
     width: 100%;
     height: 100%;
+    border: 2px solid black;
+    box-sizing: border-box;
+    padding: 3px;
 }
 
 .documentImageContainer {
@@ -402,4 +410,9 @@
 
 .documentRollInner:active {
     background-color: rgba(145, 185, 236, 0.5);
+}
+
+.hidden {
+    visibility: hidden;
+    display: none;
 }

@@ -67,7 +67,7 @@ class DBAssetFileInterface
     {
         try 
         {
-            console.log("ID", fileID);
+            console.log("getFile", fileID);
             return this.getData(fileID) 
                 ? this.#bucket.openDownloadStream(ObjectID(fileID))
                 : null;

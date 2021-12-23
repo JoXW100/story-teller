@@ -3,11 +3,11 @@ import DocumentFunctions from '../../classes/documentFunctions';
 import DiceButton from './diceButton';
 import RollPopup from './rollPopup';
 import { CloseCross } from '../icons';
-import { PopupContext } from '../timedPopup/timedPopupController';
+import { Context } from '../appContext';
 
 const DiceMenu = ({ hide }) => 
 {
-    const [popup] = useContext(PopupContext)
+    const { popups } = useContext(Context)
     const [selection, setSelection] = useState({
         4: 0, 6: 0, 8: 0, 10: 0, 12: 0, 20: 0, 100: 0
     });
@@ -15,7 +15,7 @@ const DiceMenu = ({ hide }) =>
     const onDicePress = (dice) => 
     {
         setSelection({...selection, [dice]: selection[dice] + 1 })
-    }
+    } 
 
     const roll = () => 
     {
@@ -46,7 +46,7 @@ const DiceMenu = ({ hide }) =>
         let header = "Rolled (Custom):";
         let text = `${text1}\nResult: ${sum}`;
 
-        popup.addPopup(<RollPopup header={header} text={text}/>, 4);
+        popups.add(<RollPopup header={header} text={text}/>);
         setSelection(newSelection)
     }
 

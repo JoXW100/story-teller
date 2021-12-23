@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Context } from './appContext';
 import Server from '../server/server';
 import Document from './document/document';
@@ -14,10 +14,8 @@ import '../styles/story.css';
  */
 const StoryMenu = ({ history, match }) => 
 {
-    const [data] = useContext(Context);
-    const [story, setStory] = useState(undefined);
-    const [showDiceMenu, setShowDiceMenu] = useState(false);
-    const [showHistoryMenu, setShowHistoryMenu] = useState(false);
+    const { data } = useContext(Context);
+    const [state, setState] = useState({ loading: true, story: null, showDiceMenu: false, showHistoryMenu: false });
     const inEditMode = match.params.editMode === "editMode=true";
 
     const navigate = async (documentKey, editMode) => 
@@ -26,12 +24,10 @@ const StoryMenu = ({ history, match }) =>
         history.push(`/stories/${match.params.key}/${documentKey}/editMode=${mode}`);
     }
 
-    const getSelected = () => match.params.doc;
-
     useEffect(() => 
     {
         // Set most recent
-        localStorage.setItem(data.value.storageKeys.lastStory, match.params.key);
+        localStorage.setItem(data.storageKeys.lastStory, match.params.key);
 
         // Load Story data
         Server.stories.get(match.params.key)
@@ -39,39 +35,43 @@ const StoryMenu = ({ history, match }) =>
         {
             if (response)
             {
-                setStory(response.result);
-                if (!match.params.doc && response.result.defaultDocument) 
+                if (match.params.doc && response.result.defaultDocument)
+                {
+                    setState({ ...state, loading: false, story: response.result });
+                }
+                else
+                {
                     navigate(response.result.defaultDocument);
+                }
             }
         })
         .catch(console.error());
-        
-    }, []);
+    }, [history, match]);
 
-    return (
+    return state.loading ? null : (
         <div className="storyHolder">
             <FileSystem
-                storyID={story?._id}
+                storyID={state.story._id}
                 navigate={navigate}
-                getSelected={getSelected}
+                selected={match.params.doc}
             />
             <div className="storyBody">
                 <div className="storyTitle"> 
                     <div className="storyTitleButtonGroup">
                         <div 
                             className={"storyTitleButton Dice"}
-                            onClick={() => setShowDiceMenu(!showDiceMenu)}
+                            onClick={() => setState({ ...state, showDiceMenu: !state.showDiceMenu })}
                         >
                             {"Dice"}
                         </div>
                         <div 
                             className={"storyTitleButton History"}
-                            onClick={() => setShowHistoryMenu(!showHistoryMenu)}
+                            onClick={() => setState({ ...state, showHistoryMenu: !state.showHistoryMenu })}
                         >
                             {"History"}
                         </div>
                     </div>
-                    <div className="storyTitleText"> {story && story.name} </div>
+                    <div className="storyTitleText"> {state.story.name} </div>
                     <div 
                         className={"storyTitleButton Edit"}
                         onClick={() => navigate(match.params.doc, !inEditMode)}
@@ -81,8 +81,8 @@ const StoryMenu = ({ history, match }) =>
                 </div>
                 <Document id={match.params.doc} editEnabled={inEditMode}/>
             </div>
-            { showDiceMenu    && <DiceMenu hide={() => setShowDiceMenu(false)}/>}
-            { showHistoryMenu && <HistoryMenu/>}
+            { state.showDiceMenu    && <DiceMenu hide={() => setState({ ...state, showDiceMenu: false })}/>}
+            { state.showHistoryMenu && <HistoryMenu/>}
         </div>
     );
 }

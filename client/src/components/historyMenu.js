@@ -1,25 +1,25 @@
 import React, { useContext } from 'react';
-import { Context } from './appContext';
 import '../styles/historyMenu.css';
+import { Context } from './appContext';
 
 const HistoryMenu = () => 
 {
-    const [_1, _2, history] = useContext(Context);
+    const { popupHistory } = useContext(Context);
 
     return (
         <div className="historyMenu">
-            {Object.keys(history.value)
-                   .sort((a, b) => parseInt(b) - parseInt(a))
-                   .map((key) => <HistoryEntry> {history.value[key]} </HistoryEntry>)}
+            { popupHistory.sort((a, b) => b.time - a.time)
+                .map((entry) => <HistoryEntry key={entry.time} content={entry.content}/>)
+            }
         </div>
     );
 }
 
-const HistoryEntry = ({ children }) => 
+const HistoryEntry = ({ content }) => 
 {
     return (
         <div className="historyEntry">
-            {children}
+            {content}
         </div>
     );
 }

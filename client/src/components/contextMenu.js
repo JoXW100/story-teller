@@ -1,39 +1,31 @@
 import React, { useCallback, useEffect } from 'react';
 import '../styles/contextMenu.css';
 
-/**
- * @typedef ContextMenuParams
- * @type {{ active: boolean, x: number, y:number, options: [{ name: string, action: () => void }]}}
- */
+
 
 /**
  * 
- * @param {{state: ContextMenuParams, setState: React.Dispatch<React.SetStateAction<ContextMenuParams>>}} 
+ * @param {{state: import('./appContext').ContextMenuParams }} 
  * @returns 
  */
-const ContextMenu = ({state, setState}) => 
+const ContextMenu = ({ state, hide }) => 
 {
-    const clickHandler = useCallback((e) => e.target.className !== "contextMenuItem" 
-                      && state.active
-                      && setState({...state, active: false}), [state, setState]);
+    const clickHandler = (e) => e.target.className !== "contextMenuItem"  && state.active && hide();
 
     useEffect(() => 
     {
         document.addEventListener("click", clickHandler, true);
         return () => document.removeEventListener("click", clickHandler, true);
-    });
+    }, [clickHandler]);
 
     return state.active ? (
-        <div id="contextMenu" style={{ left: state.x, top: state.y }}>
+        <div id="contextMenu" style={{ left: state.coords.x, top: state.coords.y }}>
             {state.options.map(({name, action}, index) => (
                 <div
                     key={index}
                     className="contextMenuItem"
                     onContextMenu={(e) => e.preventDefault()}
-                    onClick={() => { 
-                        action(); 
-                        setState({...state, active: false}); 
-                    }}
+                    onClick={() => action() & hide()}
                 >
                     {name}
                 </div>

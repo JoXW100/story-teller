@@ -6,7 +6,7 @@ import Popup from './popup';
 
 const Home = ({ history }) => 
 {
-    const [data] = useContext(Context);
+    const { data } = useContext(Context);
     const [lastStory, setLastStory] = useState(undefined);
     const [show, setShow] = useState(false);
     const [name, setName] = useState("My Story");
@@ -29,7 +29,7 @@ const Home = ({ history }) =>
     }
 
     useEffect(() => {
-        let storyID = localStorage.getItem(data.value.storageKeys.lastStory);
+        let storyID = localStorage.getItem(data.storageKeys.lastStory);
         if (storyID && storyID !== "undefined")
         {
             Server.stories.get(storyID)
@@ -37,7 +37,7 @@ const Home = ({ history }) =>
             .catch((error) => console.error(error));
         }
         
-    }, [data.value.storageKeys.lastStory]);
+    }, [data.storageKeys.lastStory]);
 
     return (
         <div className="AppBody">
@@ -60,7 +60,7 @@ const Home = ({ history }) =>
             <div className="OptionContainer">
                 <Button 
                     disabled={!lastStory} 
-                    to={`stories/${localStorage.getItem(data.value.storageKeys.lastStory)}`}
+                    to={`stories/${localStorage.getItem(data.storageKeys.lastStory)}`}
                 >
                     Open Last Story 
                 </Button>

@@ -4,6 +4,7 @@ import DBHandler from './db/dbHandler.js';
 import stories from './routes/stories.js';
 import files from './routes/files.js';
 import assets from './routes/assets.js';
+import { ObjectId } from 'mongodb';
 
 DBHandler.connect()
 .catch((error) => console.error(error))
@@ -12,7 +13,7 @@ DBHandler.connect()
     if (result)
     {
         initListeners();
-        addField().catch(console.error());
+        work().catch(console.error());
     }
 });
 
@@ -28,8 +29,8 @@ const initListeners = () =>
     app.listen(8080, () => console.log("Server Started"));
 }
 
-const addField = async () => 
+const work = async () => 
 {
-    //let response = await DBHandler.documents.setField("data.images", []);
-    //console.log(response);
+    //let response = await DBHandler.assets.remove(ObjectId("61c0b43e7714a2247bdb4b5b"));
+    //console.log("work:", response);
 }

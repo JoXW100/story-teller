@@ -1,5 +1,6 @@
 import { Db, Collection, ObjectId as ObjectID } from 'mongodb';
 import '../@types.js';
+import DBHandler from './dbHandler.js';
 
 /**
  * Represents the public database interface related to documents
@@ -50,7 +51,7 @@ class DBAssetInterface
             }
             
             let result = await this.#collection.insertOne(request);
-            console.log(`Add: (${name}) => ${result.insertedId}`);
+            console.log(`Add Asset: (${name}) => ${result.insertedId}`);
             return result.insertedId;
         }
         catch (error)
@@ -70,7 +71,7 @@ class DBAssetInterface
         try
         {
             let result = await this.#collection.findOne({ _id: ObjectID(assetID) });
-            console.log(`Get: ${assetID}`);
+            console.log(`Get Asset: ${assetID}`);
             return result;
         }
         catch (error)
@@ -82,7 +83,7 @@ class DBAssetInterface
 
     /**
      * Gets the related assets from the database
-     * @param {ObjectID} documentID The id of the asset to get
+     * @param {ObjectID} documentID The id of the related document
      * @returns {Promise<?[DBAsset]>} The ids of the assets
      */
     async getRelated(documentID)
@@ -110,13 +111,44 @@ class DBAssetInterface
         try
         {
             let result = await this.#collection.findOneAndDelete({ _id: ObjectID(assetID) });
-            console.log(`Remove: ${assetID} => ${result !== null}`);
-            return result ? result.value : result;
+            let result2 = false;
+            if (result)
+            {
+                result2 = await DBHandler.assetFiles.remove(result.value.assetFileID);
+            }
+            console.log(`Remove Asset: ${assetID} => ${result !== null && result2}`);
+            return result.value;
         }
         catch (error)
         {
             console.error(error);
             return null;
+        }
+    }
+
+    /**
+     * Removes an asset from the database
+     * @param {ObjectID} documentID The id of the related document
+     * @returns {Promise<boolean>}>} The removed asset
+     */
+    async removeRelated(documentID)
+    {
+        try
+        {
+            let result = await this.getRelated({ _id: ObjectID(documentID) });
+            if (result)
+            {
+                let result2 = Promise.all(result.map((asset) => this.remove(asset._id)));
+                console.log(`Remove Related Assets: ${documentID} => ${result2.length > 0}`);
+                return result2 ? result2.length > 0 : false;
+            }
+            console.log(`Remove Related Assets: ${documentID} => ${false}`);
+            return false;
+        }
+        catch (error)
+        {
+            console.error(error);
+            return false;
         }
     }
 
@@ -139,7 +171,7 @@ class DBAssetInterface
             }
 
             let result = await this.#collection.updateOne(filter, newValues);
-            console.log(`Update: ${assetID} ${values} => ${result}`);
+            console.log(`Update Asset: ${assetID} ${values} => ${result}`);
             return result.modifiedCount == 1;
         }
         catch (error)
