@@ -92,6 +92,14 @@
     font-family: 'Consolas', 'monaco', monospace;
 }
 
+
+.inputSectionInput.checkboxSection {
+    max-width: 28px;
+    height: 27.79px;
+    margin: 0;
+    align-self: center;
+}
+
 .fileSection {
     flex: 1;
     display: flex;
@@ -345,8 +353,6 @@
 .documentImageContainer {
     display: flex;
     flex: 1;
-    margin-top: 10px;
-    margin-bottom: 10px;
 }
 
 .documentFill {
@@ -415,4 +421,59 @@
 .hidden {
     visibility: hidden;
     display: none;
+}
+
+.documentCollapsible {
+    display: inline-block;
+    border: 1px solid black;
+    box-sizing: border-box;
+    width: 100%;
+    background-color: rgb(220, 235, 255);
+    border-bottom: 1px solid black;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.documentCollapsibleHeader {
+    color: black;
+    font-weight: bold;
+    font-size: x-large;
+    text-align: center;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.documentCollapsibleContent {
+    display: block;
+    border-top: 1px solid black;
+    padding: 10px;
+}
+
+.documentTable {
+    width: 100%;
+    white-space: pre-wrap;
+    border: 1px solid black;
+    box-sizing: border-box;
+    flex: 1;
+}
+
+.documentTableHeader {
+    color: black;
+    font-weight: bold;
+    border: 1px solid black;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.documentTableRow {
+    flex: 1;
+}
+
+.documentTableItem {
+    border: 1px solid black;
+    box-sizing: border-box;
 }

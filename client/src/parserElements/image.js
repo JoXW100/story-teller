@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import DocumentFunctions from '../../classes/documentFunctions';
-import Server from '../../server/server';
-import "../../styles/document.css";
+import DocumentFunctions from '../classes/documentFunctions';
+import Server from '../server/server';
+import "../styles/document.css";
 
 export const toImageDictionary = (index) => ({
     "<image>": { 

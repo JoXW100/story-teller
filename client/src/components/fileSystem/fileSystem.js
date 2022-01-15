@@ -15,14 +15,36 @@ import '../../styles/files.css';
 const FileSystem = ({ storyID, navigate, selected }) => 
 {
     const [state, setState] = useState({ loading: true, files: []});
-    const { menu } = useContext(Context);
+    const { menu, data } = useContext(Context);
 
     const reload = () => {
         setState({ ...state, loading: true });
         getChildFiles(storyID, (response) => response && setState({ loading: false, files: response.result}));
     }
 
-    useEffect(reload, [storyID])
+    const updateFolderData = () => {
+        Object.keys(localStorage).forEach((key) => 
+        {
+            if (key.startsWith(data.storageKeys.folders))
+            {
+                try 
+                {
+                    let value = JSON.parse(localStorage.getItem(key));
+                    if (value.time + data.folderDuration < Date.now())
+                        localStorage.removeItem(key);
+                } 
+                catch
+                {
+                    localStorage.removeItem(key);
+                }
+            }
+        });
+    }
+
+    useEffect(() => {
+        updateFolderData();
+        reload();
+    }, [storyID])
 
     const contextMenu = (e) => 
     {
@@ -32,7 +54,8 @@ const FileSystem = ({ storyID, navigate, selected }) =>
             { name: "Add folder",   action: () => addFile(storyID, storyID, "folder", reload)},
             { name: "Add document", action: () => addFile(storyID, storyID, "doc", reload)},
             { name: "Add creature", action: () => addFile(storyID, storyID, "cre", reload)},
-            { name: "Add ability",  action: () => addFile(storyID, storyID, "abi", reload)}
+            { name: "Add ability",  action: () => addFile(storyID, storyID, "abi", reload)},
+            { name: "Add spell",    action: () => addFile(storyID, storyID, "spe", reload)}
         ]);
     }
 
@@ -82,6 +105,14 @@ export const fileSort = (a, b) =>
     return a.name.localeCompare(b.name);
 }
 
+const fileRollProperty = {
+    scalingModifier: "none",
+    proficiency: 0,
+    baseModifier: 0,
+    diceSize: 20,
+    diceNum: 1
+}
+
 export const addFile = (storyID, holderID, type, then) => 
 {
     let content;
@@ -106,8 +137,8 @@ export const addFile = (storyID, holderID, type, then) =>
             name = "newCreature";
             content = {
                 name: "A Creature",
-                shortText: "description",
-                text: "full text",
+                shortText: "",
+                text: "",
                 type: "none",
                 size: "none",
                 alignment: "none",
@@ -134,6 +165,7 @@ export const addFile = (storyID, holderID, type, then) =>
                     },
                     speed: {
                         walk: 0,
+                        climb: 0,
                         swim: 0,
                         fly: 0,
                         burrow: 0
@@ -159,32 +191,49 @@ export const addFile = (storyID, holderID, type, then) =>
             name = "newAbility";
             content = {
                 name: "An Ability",
-                shortText: "description",
-                text: "full text",
+                shortText: "",
+                text: "",
                 notes: "-",
                 abilityType: "none",
-                actionType: "special",
+                actionType: "none",
+                conditionType: "none",
+                saveAttribute: "none",
                 charges: -1,
                 chargeReset: "none",
-                roll: {
-                    scalingModifier: "none",
-                    proficiency: 0,
-                    baseModifier: 0,
-                    diceSize: 20,
-                    diceNum: 1
-                },
+                roll: fileRollProperty,
                 effect: {
                     type: "none",
                     range: "0 ft",
                     successEffect: "-",
                     failEffect: "-",
-                    roll: {
-                        scalingModifier: "none",
-                        proficiency: 0,
-                        baseModifier: 0,
-                        diceSize: 20,
-                        diceNum: 1
-                    }
+                    roll: fileRollProperty
+                }
+            }
+            break;
+
+        case "spe":
+            name = "newSpell";
+            content = {
+                name: "A Spell",
+                shortText: "",
+                text: "",
+                castingTime:   "none",
+                conditionType: "none",
+                saveAttribute: "none",
+                level: 0,
+                duration: "instantaneous",
+                school: "Evocation",
+                components: "",
+                concentration: false,
+                roll: fileRollProperty,
+                effect: {
+                    type: "none",
+                    dmg:  "none",
+                    area: "none",
+                    range: "0 ft",
+                    successEffect: "-",
+                    failEffect: "-",
+                    roll: fileRollProperty
                 }
             }
             break;

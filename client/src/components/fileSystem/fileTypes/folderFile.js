@@ -6,7 +6,7 @@ import { addFile, fileSort, getChildFiles, moveFile, removeFile, renameFile } fr
  
 /**
  * @param {{ 
- *      data: DBFile,
+ *      file: DBFile,
  *      storyID: ObjectID,
  *      navigate: (id: ObjectID) => Promise<void>,
  *      selected: ObjectID,
@@ -15,18 +15,36 @@ import { addFile, fileSort, getChildFiles, moveFile, removeFile, renameFile } fr
  * }} 
  * @returns {React.Component}
  */
-const FolderFile = ({ data, storyID, navigate, selected, reloadParent }) => 
+const FolderFile = ({ file, storyID, navigate, selected, reloadParent }) => 
 {
-    const { menu } = useContext(Context);
-    const [state, setState] = useState({ loading: true, files: [], expanded: true, typing: false });
+    const { menu, data } = useContext(Context);
+
+    const getExpanded = () => {
+        try
+        {
+            let a = JSON.parse(localStorage.getItem(`${data.storageKeys.folders}.${file._id}`));
+            return a.expanded;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    const [state, setState] = useState({ 
+        loading: true, 
+        files: [], 
+        expanded: getExpanded(), 
+        typing: false 
+    });
 
     const reload = () => {
         setState({ ...state, loading: true });
-        getChildFiles(data._id, (response) => response && setState({ ...state, loading: false, files: response.result }));
+        getChildFiles(file._id, (response) => response && setState({ ...state, loading: false, files: response.result }));
     }
 
     const done = (text) => {
-        if (text !== data.content) renameFile(data._id, text, reloadParent);
+        if (text !== file.content) renameFile(file._id, text, reloadParent);
         setState({ ...state, typing: false });
     }
 
@@ -36,11 +54,12 @@ const FolderFile = ({ data, storyID, navigate, selected, reloadParent }) =>
         if (e.currentTarget !== e.target ) return;
         menu.show({ x: e.pageX, y: e.pageY }, [
             { name: "Rename",       action: () => setState({ ...state, typing: true }) },
-            { name: "Remove",       action: () => removeFile(data._id, reloadParent) },
-            { name: "Add folder",   action: () => addFile(storyID, data._id, "folder", reload) },
-            { name: "Add document", action: () => addFile(storyID, data._id, "doc", reload) },
-            { name: "Add creature", action: () => addFile(storyID, data._id, "cre", reload) },
-            { name: "Add ability",  action: () => addFile(storyID, data._id, "abi", reload) } 
+            { name: "Remove",       action: () => removeFile(file._id, reloadParent) },
+            { name: "Add folder",   action: () => addFile(storyID, file._id, "folder", reload) },
+            { name: "Add document", action: () => addFile(storyID, file._id, "doc", reload) },
+            { name: "Add creature", action: () => addFile(storyID, file._id, "cre", reload) },
+            { name: "Add ability",  action: () => addFile(storyID, file._id, "abi", reload) },
+            { name: "Add spell",    action: () => addFile(storyID, file._id, "spe", reload) } 
         ]);
     }
 
@@ -53,15 +72,21 @@ const FolderFile = ({ data, storyID, navigate, selected, reloadParent }) =>
     {
         e.preventDefault();
         if(e.currentTarget !== e.target) return;
-        moveFile(window.dragData["data"].object, data._id, () => window.location.reload());
+        moveFile(window.dragData["data"].object, file._id, () => window.location.reload());
     }
+
+    useEffect(() => 
+    {
+        if (data.storageKeys.folders && file._id) 
+            localStorage.setItem(`${data.storageKeys.folders}.${file._id}`, JSON.stringify({ expanded: state.expanded, time: Date.now() }));
+    }, [state.expanded])
 
     useEffect(reload, [storyID]);
 
     return state.loading ? null : (
         state.typing ? 
             <FileInput 
-                initialText={data.name} 
+                initialText={file.name} 
                 setTyping={(value) => setState({ ...state, typing: value })} 
                 done={done}
             />
@@ -74,15 +99,15 @@ const FolderFile = ({ data, storyID, navigate, selected, reloadParent }) =>
                 onDragOver={allowDrop}
                 onDrop={drop}
             > 
-                {`${state.expanded ? '˅' : '>'} ${data.name}`}
+                {`${state.expanded ? '˅' : '>'} ${file.name}`}
             </div>
 
             { state.expanded &&
                 <div className="folderContent">
-                    { state.files.sort(fileSort).map((file, index) =>
+                    { state.files.sort(fileSort).map((x, index) =>
                         <File
-                            key={file.name + data._id + state.files.length + index}
-                            data={file}
+                            key={x.name + x._id + state.files.length + index}
+                            data={x}
                             storyID={storyID}
                             navigate={navigate}
                             selected={selected}

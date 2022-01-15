@@ -1,127 +1,110 @@
 import React, { useEffect, useState } from 'react';
-import Server from '../../../server/server';
 import DocumentEditGroupSection from '../documentComponents/documentEditGroupSection';
 import DocumentEditInputSection from '../documentComponents/documentEditInputSection';
 
 /**
- * 
- * @param {{ document: DBFile }} 
- * @returns 
+ * @param {{ document: DBFile, save: (update: Object<string, *>, callback: (response: {}) => void) => void}} 
+ * @returns {React.Component}
  */
-const AbiEditor = ({ document, onChange }) => 
+const AbiEditor = ({ document, save }) => 
 {
-    /** @type {[content: DBAbilityFileContent, setContent: (content: DBAbilityFileContent) => void]} */
-    const [content, setContent] = useState(document.content);
-    const [isSaving, setIsSaving] = useState(false);
-    const [savingQueue, setSavingQueue] = useState(false);
+    /** @type {[ state: { content: DBAbilityFileContent, loading: boolean }, setContent: (content: DBAbilityFileContent) => void]} */
+    const [state, setValue] = useState({ content: document.content, loading: true });
 
     useEffect(() => 
     {
-        if (document)
-        {
-            setContent(document.content);
-            setSavingQueue(false);
-            setIsSaving(false);
-        }
-    }, [document])
+        setValue({ 
+            content: document.content, 
+            loading: true
+        });
+    }, [document]);
     
     useEffect(() => 
     {
-        const save = (override = false) => 
-        {
-            if (isSaving)
-            {
-                setSavingQueue(!override);
-            }
-            if (!isSaving || override)
-            {
-                Server.files.update(document._id, { content: content })
-                .catch(console.error())
-                .finally(() => (savingQueue && save(override = true) & setIsSaving(false)))
-                .then((response) => {
-                    if (!response) console.error("Failed Saving");
-                    if (savingQueue)
-                    {
-                        setSavingQueue(false);
-                        save();
-                    }
-                    onChange();
-                });
-            }
-        }
-        save();
-    }, [content]);
+        if (state.loading) setValue({ ...state, loading: false });
+        else save({ content: state.content });
+    }, [state.content]);
 
     return (
         <div className="editBackground">
             <DocumentEditGroupSection text="Info">
                 <DocumentEditInputSection 
                     text="Name"
-                    value={content.name} 
-                    setValue={(value) => setContent({ ...content, name: value })}
+                    value={state.content.name} 
+                    setValue={(value) => setValue({ ...state, content: { ...state.content, name: value }})}
                 />
                 <DocumentEditInputSection 
                     text="Ability Type"
-                    value={content.abilityType} 
-                    setValue={(value) => setContent({ ...content, abilityType: value })}
+                    value={state.content.abilityType} 
+                    setValue={(value) => setValue({ ...state, content: { ...state.content, abilityType: value }})}
                 />
                 <DocumentEditInputSection 
                     text="Action Type"
-                    value={content.actionType} 
-                    setValue={(value) => setContent({ ...content, actionType: value })}
+                    value={state.content.actionType} 
+                    setValue={(value) => setValue({ ...state, content: { ...state.content, actionType: value }})}
+                />
+                <DocumentEditInputSection 
+                    text="Condition Type"
+                    value={state.content.conditionType} 
+                    setValue={(value) => setValue({ ...state, content: { ...state.content, conditionType: value }})}
+                />
+                <DocumentEditInputSection 
+                    text="Save Attribute"
+                    value={state.content.saveAttribute} 
+                    setValue={(value) => setValue({ ...state, content: { ...state.content, saveAttribute: value }})}
                 />
                 <DocumentEditInputSection 
                     text="Notes"
-                    value={content.notes} 
-                    setValue={(value) => setContent({ ...content, notes: value })}
+                    value={state.content.notes} 
+                    setValue={(value) => setValue({ ...state, content: { ...state.content, notes: value }})}
                 />
                 <DocumentEditInputSection 
                     text="Charges"
                     type='number'
-                    value={content.charges}
-                    setValue={(value) => setContent({ ...content, charges: parseInt(value) })}
+                    value={state.content.charges}
+                    setValue={(value) => setValue({ ...state, content: { ...state.content, charges: parseInt(value) }})}
                 />
                 <DocumentEditInputSection 
                     text="Charge Reset"
-                    value={content.chargeReset} 
-                    setValue={(value) => setContent({ ...content, chargeReset: value })}
+                    value={state.content.chargeReset} 
+                    setValue={(value) => setValue({ ...state, content: { ...state.content, chargeReset: value }})}
                 />
                 <DocumentEditInputSection 
                     text="Description"
-                    value={content.shortText} 
-                    setValue={(value) => setContent({ ...content, shortText: value })} 
+                    value={state.content.shortText} 
+                    setValue={(value) => setValue({ ...state, content: { ...state.content, shortText: value }})} 
                     multiline={true}
                 />
 
                 <DocumentEditGroupSection text="Roll">
                     <DocumentEditInputSection 
                         text="Scaling"
-                        value={content.roll.scalingModifier} 
-                        setValue={(value) => setContent({ ...content, roll: { ...(content.roll), scalingModifier: value }})}
+                        value={state.content.roll.scalingModifier} 
+                        setValue={(value) => setValue({ ...state, content: { ...state.content, roll: { ...state.content.roll, scalingModifier: value }}})}
                     />
                     <DocumentEditInputSection 
                         text="Proficiency"
                         type='number'
-                        value={content.roll.proficiency} 
-                        setValue={(value) => setContent({ ...content, roll: { ...(content.roll), proficiency: parseInt(value) }})}
+                        value={state.content.roll.proficiency} 
+                        setValue={(value) => setValue({ ...state, content: { ...state.content, roll: { ...state.content.roll, proficiency: parseInt(value) }}})}
                     />
                     <DocumentEditInputSection 
                         text="Base Modifier"
                         type='number'
-                        value={content.roll.baseModifier} 
-                        setValue={(value) => setContent({ ...content, roll: { ...(content.roll), baseModifier: parseInt(value) }})}
+                        value={state.content.roll.baseModifier} 
+                        setValue={(value) => setValue({ ...state, content: { ...state.content, roll: { ...state.content.roll, baseModifier: parseInt(value) }}})}
                     />
                     <DocumentEditInputSection 
                         text="Dice Size"
                         type='number'
-                        value={content.roll.diceSize} 
-                        setValue={(value) => setContent({ ...content, roll: { ...(content.roll), diceSize: parseInt(value) }})}
+                        value={state.content.roll.diceSize} 
+                        setValue={(value) => setValue({ ...state, content: { ...state.content, roll: { ...state.content.roll, diceSize: parseInt(value) }}})}
                     />
                     <DocumentEditInputSection 
                         text="Dice Num"
                         type='number'
-                        value={content.roll.diceNum} 
-                        setValue={(value) => setContent({ ...content, roll: { ...(content.roll), diceNum: parseInt(value) }})}
+                        value={state.content.roll.diceNum} 
+                        setValue={(value) => setValue({ ...state, content: { ...state.content, roll: { ...state.content.roll, diceNum: parseInt(value) }}})}
                     />
                 </DocumentEditGroupSection>
             </DocumentEditGroupSection>
@@ -129,56 +112,56 @@ const AbiEditor = ({ document, onChange }) =>
             <DocumentEditGroupSection text="Effect">
                 <DocumentEditInputSection 
                     text="Type"
-                    value={content.effect.type} 
-                    setValue={(value) => setContent({ ...content, effect: { ...(content.effect), type: value }})}
+                    value={state.content.effect.type} 
+                    setValue={(value) => setValue({ ...state, content: { ...state.content, effect: { ...(state.content.effect), type: value }}})}
                 />
                 <DocumentEditInputSection 
                     text="Range"
-                    value={content.effect.range} 
-                    setValue={(value) => setContent({ ...content, effect: { ...(content.effect), range: value }})}
+                    value={state.content.effect.range} 
+                    setValue={(value) => setValue({ ...state, content: { ...state.content, effect: { ...(state.content.effect), range: value }}})}
                 />
                 <DocumentEditInputSection 
                     text="Success Effect"
-                    value={content.effect.successEffect} 
-                    setValue={(value) => setContent({ ...content, effect: { ...(content.effect), successEffect: value }})} 
+                    value={state.content.effect.successEffect} 
+                    setValue={(value) => setValue({ ...state, content: { ...state.content, effect: { ...(state.content.effect), successEffect: value }}})} 
                     multiline={true}
                 />
                 <DocumentEditInputSection 
                     text="Fail Effect"
-                    value={content.effect.failEffect} 
-                    setValue={(value) => setContent({ ...content, effect: { ...(content.effect), failEffect: value }})} 
+                    value={state.content.effect.failEffect} 
+                    setValue={(value) => setValue({ ...state, content: { ...state.content, effect: { ...(state.content.effect), failEffect: value }}})} 
                     multiline={true}
                 />
 
                 <DocumentEditGroupSection text="Roll">
                     <DocumentEditInputSection 
                         text="Scaling"
-                        value={content.effect.roll.scalingModifier} 
-                        setValue={(value) => setContent({ ...content, effect: { ...(content.effect), roll: { ...(content.effect.roll), scalingModifier: value }}})}
+                        value={state.content.effect.roll.scalingModifier} 
+                        setValue={(value) => setValue({ ...state, content: { ...state.content, effect: { ...(state.content.effect), roll: { ...state.content.effect.roll, scalingModifier: value }}}})}
                     />
                     <DocumentEditInputSection 
                         text="Proficiency"
                         type='number'
-                        value={content.effect.roll.proficiency} 
-                        setValue={(value) => setContent({ ...content, effect: { ...(content.effect), roll: { ...(content.effect.roll), proficiency: parseInt(value) }}})}
+                        value={state.content.effect.roll.proficiency} 
+                        setValue={(value) => setValue({ ...state, content: { ...state.content, effect: { ...(state.content.effect), roll: { ...state.content.effect.roll, proficiency: parseInt(value) }}}})}
                     />
                     <DocumentEditInputSection 
                         text="Base Modifier"
                         type='number'
-                        value={content.effect.roll.baseModifier} 
-                        setValue={(value) => setContent({ ...content, effect: { ...(content.effect), roll: { ...(content.effect.roll), baseModifier: parseInt(value) }}})}
+                        value={state.content.effect.roll.baseModifier} 
+                        setValue={(value) => setValue({ ...state, content: { ...state.content, effect: { ...(state.content.effect), roll: { ...state.content.effect.roll, baseModifier: parseInt(value) }}}})}
                     />
                     <DocumentEditInputSection 
                         text="Dice Size"
                         type='number'
-                        value={content.effect.roll.diceSize} 
-                        setValue={(value) => setContent({ ...content, effect: { ...(content.effect), roll: { ...(content.effect.roll), diceSize: parseInt(value) }}})}
+                        value={state.content.effect.roll.diceSize} 
+                        setValue={(value) => setValue({ ...state, content: { ...state.content, effect: { ...(state.content.effect), roll: { ...state.content.effect.roll, diceSize: parseInt(value) }}}})}
                     />
                     <DocumentEditInputSection 
                         text="Dice Num"
                         type='number'
-                        value={content.effect.roll.diceNum} 
-                        setValue={(value) => setContent({ ...content, effect: { ...(content.effect), roll: { ...(content.effect.roll), diceNum: parseInt(value) }}})}
+                        value={state.content.effect.roll.diceNum} 
+                        setValue={(value) => setValue({ ...state, content: { ...state.content, effect: { ...(state.content.effect), roll: { ...state.content.effect.roll, diceNum: parseInt(value) }}}})}
                     />
                 </DocumentEditGroupSection>
             </DocumentEditGroupSection>
@@ -186,8 +169,8 @@ const AbiEditor = ({ document, onChange }) =>
             <DocumentEditGroupSection text="Text" fillScreen={true}>
                 <DocumentEditInputSection
                     text="Body"
-                    value={content.text} 
-                    setValue={(value) => setContent({ ...content, text: value })} 
+                    value={state.content.text} 
+                    setValue={(value) => setValue({ ...state, content: { ...state.content, text: value }})} 
                     multiline={true}
                     fillScreen={true}
                 />

@@ -7,6 +7,8 @@ import React from 'react';
  */
 const DocumentEditInputSection = ({ text, value, setValue, type="text", multiline=false, fillScreen=false}) => 
 {
+    const isCheckbox = type === "checkbox";
+
     return (
         <div className={fillScreen ? "inputSection fill" : "inputSection"}>
             <div className="inputSectionText"> {text} </div>
@@ -20,12 +22,13 @@ const DocumentEditInputSection = ({ text, value, setValue, type="text", multilin
                 />
                 :
                 <input
-                    className={"inputSectionInput"}
+                    className={isCheckbox ? "inputSectionInput checkboxSection" : "inputSectionInput"}
                     spellCheck={true}
                     lang="en"
                     value={value}
                     type={type}
-                    onChange={(e) => setValue(e.target.value)}
+                    checked={value}
+                    onChange={(e) => setValue(isCheckbox ? e.target.checked : e.target.value)}
                 />
             }
         </div>

@@ -2,17 +2,18 @@ import React, { useEffect, useState } from 'react';
 import CreRenderer from './renders/creRenderer';
 import DocRenderer from './renders/docRenderer';
 import AbiRenderer from './renders/abiRenderer';
-import DocumentAlign from '../documentDictionaries/align';
-import DocumentBox from '../documentDictionaries/box';
-import DocumentFill from '../documentDictionaries/fill';
-import DocumentHeader2 from '../documentDictionaries/header2';
-import DocumentHeader3 from '../documentDictionaries/header3';
-import DocumentHeader4 from '../documentDictionaries/header4';
-import DocumentImage from '../documentDictionaries/image';
-import DocumentLinkContent from '../documentDictionaries/linkContent';
-import DocumentRoll from '../documentDictionaries/roll';
-import DocumentText from '../documentDictionaries/text';
-import DocumentVGroup from '../documentDictionaries/vGroup';
+import SpeRenderer from './renders/speRenderer';
+import DocumentAlign from '../../parserElements/align';
+import DocumentBox from '../../parserElements/box';
+import DocumentFill from '../../parserElements/fill';
+import DocumentHeader2 from '../../parserElements/header2';
+import DocumentHeader3 from '../../parserElements/header3';
+import DocumentHeader4 from '../../parserElements/header4';
+import DocumentImage from '../../parserElements/image';
+import DocumentLinkContent from '../../parserElements/linkContent';
+import DocumentRoll from '../../parserElements/roll';
+import DocumentText from '../../parserElements/text';
+import DocumentVGroup from '../../parserElements/vGroup';
 import "../../styles/document.css";
 
 /**
@@ -32,7 +33,10 @@ const DocumentRender = ({ document }) =>
 
             case "abi":
                 return <AbiRenderer document={document}/>;
-        
+            
+            case "spe":
+                return <SpeRenderer document={document}/>
+
             default:
                 return <DocRenderer document={document}/>;
         }

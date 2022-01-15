@@ -1,5 +1,7 @@
 {
     "storageKeys": {
-        "lastStory": "_lastStory"
-    }
+        "lastStory": "_lastStory",
+        "folders": "_folders"
+    },
+    "folderDuration": 36000000
 }

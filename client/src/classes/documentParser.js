@@ -1,5 +1,4 @@
-import React from 'react';
-import * as Dictionaries from '../components/documentDictionaries/index';
+import * as Dictionaries from '../parserElements/index';
 
 /**
  * @typedef PartStackElement
@@ -23,16 +22,22 @@ class DocumentParser
         ...Dictionaries.toBoxDictionary(5),
         ...Dictionaries.toLinkDictionary(6),
         ...Dictionaries.toLinkContentDictionary(7),
-        ...Dictionaries.toTextDictionary(8),
-        ...Dictionaries.toListDictionary(9),
-        ...Dictionaries.toAlignDictionary(10),
-        ...Dictionaries.toBoldDictionary(11),
-        ...Dictionaries.toGroupDictionary(12),
-        ...Dictionaries.toVGroupDictionary(13),
-        ...Dictionaries.toImageDictionary(14),
-        ...Dictionaries.toFillDictionary(15),
-        ...Dictionaries.toCircleDictionary(16),
-        ...Dictionaries.toRollDictionary(17)
+        ...Dictionaries.toLinkTitleDictionary(8),
+        ...Dictionaries.toTextDictionary(9),
+        ...Dictionaries.toListDictionary(10),
+        ...Dictionaries.toAlignDictionary(11),
+        ...Dictionaries.toBoldDictionary(12),
+        ...Dictionaries.toGroupDictionary(13),
+        ...Dictionaries.toVGroupDictionary(14),
+        ...Dictionaries.toImageDictionary(15),
+        ...Dictionaries.toFillDictionary(16),
+        ...Dictionaries.toCircleDictionary(17),
+        ...Dictionaries.toRollDictionary(18),
+        ...Dictionaries.toCollapsibleDictionary(19),
+        ...Dictionaries.toTableDictionary(20),
+        ...Dictionaries.toTableHeaderDictionary(21),
+        ...Dictionaries.toTableItemDictionary(22),
+        ...Dictionaries.toTableRowDictionary(23)
     }
 
     /**

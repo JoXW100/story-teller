@@ -3,6 +3,8 @@
         "browserslist",
         "ckeditor",
         "multiline",
+        "noopener",
+        "noreferrer",
         "originalname"
     ]
 }

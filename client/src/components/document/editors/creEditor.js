@@ -1,72 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import Server from '../../../server/server';
 import DocumentArraySection from '../documentComponents/documentArraySection';
 import DocumentEditFileSection from '../documentComponents/documentEditFileSection';
 import DocumentEditGroupSection from '../documentComponents/documentEditGroupSection';
 import DocumentEditInputSection from '../documentComponents/documentEditInputSection';
 
 /**
- * 
- * @param {{ document: DBFile }} 
- * @returns 
+ * @param {{ document: DBFile, save: (update: Object<string, *>, callback: (response: {}) => void) => void}} 
+ * @returns {React.Component}
  */
-const CreEditor = ({ document, onChange }) => 
+const CreEditor = ({ document, save }) => 
 {
     /** @type {[ state: { content: DBCreatureFileContent, loading: boolean, isSaving: boolean, isQueued: boolean }, setContent: (content: DBCreatureFileContent) => void]} */
 
     const [state, setState] = useState({ 
         content: document.content, 
-        loading: true,
-        isSaving: false,
-        isQueued: false
+        loading: true
     });
-
-    const save = (override = false) => 
-    {
-        if (state.isSaving && !override) 
-        {
-            if (!state.isQueued) setState({ ...state, isQueued: true });
-        }
-        else
-        {
-            let update = {
-                ["content.shortText"]: state.content.shortText,
-                ["content.title"]: state.content.title,
-                ["content.text"]: state.content.text
-            }
-            Server.files.update(document._id, update)
-            .catch(console.error())
-            .then((response) => {
-                if (!response) console.error("Failed Saving");
-                
-                if (state.isQueued && !override)
-                {
-                    setState({ ...state, isSaving: false, isQueued: false });
-                    save(true);
-                }
-                else
-                {
-                    setState({ ...state, isSaving: false });
-                    onChange();
-                }
-            });
-        }
-    }
 
     useEffect(() => 
     {
         setState({ 
             content: document.content, 
-            loading: true,
-            isSaving: false,
-            isQueued: false
+            loading: true
         });
     }, [document]);
     
     useEffect(() => 
     {
         if (state.loading) setState({ ...state, loading: false });
-        else save();
+        else save({ content: state.content });
     }, [state.content]);
 
     return (
@@ -248,6 +210,11 @@ const CreEditor = ({ document, onChange }) =>
                         text="Walk"
                         value={state.content.stats.speed.walk} 
                         setValue={(value) => setState({ ...state, content: { ...state.content, stats: { ...state.content.stats, speed: { ...state.content.stats.speed, walk: value }}}})}
+                    />
+                    <DocumentEditInputSection 
+                        text="Climb"
+                        value={state.content.stats.speed.climb} 
+                        setValue={(value) => setState({ ...state, content: { ...state.content, stats: { ...state.content.stats, speed: { ...state.content.stats.speed, climb: value }}}})}
                     />
                     <DocumentEditInputSection
                         text="Swim"

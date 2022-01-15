@@ -45,6 +45,21 @@ router.get("/get", async (request, response) =>
     }
 });
 
+router.get("/getAll", async (request, response) => 
+{
+    const params = {
+        ids: request.query.ids
+    }
+    
+    if (Validate.params(params, response))
+    {
+        let result = await DBHandler.files.getAll(params.ids.split(','));
+
+        return result ? Validate.success(response, result)
+                      : Validate.failure(response);
+    }
+});
+
 router.get("/getAllFrom", async (request, response) => 
 {
     const params = {

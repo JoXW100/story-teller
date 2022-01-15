@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import DocumentFunctions from '../../classes/documentFunctions';
-import "../../styles/document.css";
+import DocumentFunctions from '../classes/documentFunctions';
+import "../styles/document.css";
 
 export const toCircleDictionary = (index) => ({
     "<circle>": { 

@@ -6,7 +6,7 @@ import React, { useRef, useState } from 'react';
  */
 const DocumentEditGroupSection = ({ children, text, fillScreen = false }) => 
 {
-    const [open, setOpen] = useState(fillScreen);
+    const [open, setOpen] = useState(true);
     const ref = useRef();
 
     return (

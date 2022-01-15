@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import Server from '../../server/server';
+import Server from '../server/server';
+import DocumentFunctions from '../classes/documentFunctions';
+import { AbilityFile } from '../components/document/renders/abiRenderer';
+import { SpellFile } from '../components/document/renders/speRenderer';
 import DocumentLink from './link';
 import DocumentText from './text';
 import DocumentHeader3 from './header3';
-import DocumentFunctions from '../../classes/documentFunctions';
-import { AbilityFile } from '../document/renders/abiRenderer';
-import "../../styles/document.css";
+import DocumentAlign from './align';
+import DocumentImage from './image';
+import "../styles/document.css";
 
 export const toLinkContentDictionary = (index) => ({
     "<link-content>": { 
@@ -42,10 +45,29 @@ const DocumentLinkContent = ({ args }) =>
 
     const getDisplay = () => 
     {
-        switch (state.document.type) {
+        switch (state.document.type) 
+        {
             case "abi":
                 return <AbilityFile document={state.document} attributes={args.attributes} proficiency={args.proficiency}/>
+
+            case "spe":
+                return <SpellFile document={state.document} attributes={args.attributes} proficiency={args.proficiency}/>
         
+            case "cre":
+                return (
+                    <div className="documentBox"> 
+                        <DocumentLink args={args}>
+                            <DocumentAlign>
+                                <DocumentImage args={{ imageID: state.document.content.portraitID, flex: 0.15 }}/>
+                                <DocumentText>
+                                    <DocumentHeader3> {state.document.content.name} </DocumentHeader3>
+                                    {state.document.content.shortText}
+                                </DocumentText>
+                            </DocumentAlign>
+                        </DocumentLink>
+                    </div>
+                )
+
             default:
                 return (
                     <div className="documentBox"> 

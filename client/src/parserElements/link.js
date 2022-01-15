@@ -1,6 +1,6 @@
 import React from 'react';
-import DocumentFunctions from '../../classes/documentFunctions';
-import "../../styles/document.css";
+import DocumentFunctions from '../classes/documentFunctions';
+import "../styles/document.css";
 
 export const toLinkDictionary = (index) => ({
     "<link>": { 

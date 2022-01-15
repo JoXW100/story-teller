@@ -4,7 +4,6 @@ import DBHandler from './db/dbHandler.js';
 import stories from './routes/stories.js';
 import files from './routes/files.js';
 import assets from './routes/assets.js';
-import { ObjectId } from 'mongodb';
 
 DBHandler.connect()
 .catch((error) => console.error(error))
@@ -31,6 +30,6 @@ const initListeners = () =>
 
 const work = async () => 
 {
-    //let response = await DBHandler.assets.remove(ObjectId("61c0b43e7714a2247bdb4b5b"));
+    //let response = await DBHandler.assets.remove(ObjectId("61c082937714a2247bdb4b3d"));
     //console.log("work:", response);
 }

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import DocumentParser from '../../../classes/documentParser';
+import Server from '../../../server/server';
 import { documentToComponent } from '../documentRender';
+import { AbilityFile } from './abiRenderer';
+import { SpellFile } from './speRenderer';
 
 /**
  * 
@@ -11,7 +14,6 @@ const CreRenderer = ({ document }) =>
 {
     /** @type {DBCreatureFileContent} */
     const data = document.content;
-
     const [state, setState] = useState({ loading: true, content: null });
 
     const attributeToModifier = (key) => Math.floor(data.stats.attributes[key] / 2) - 5
@@ -36,32 +38,51 @@ const CreRenderer = ({ document }) =>
         level === 1 ? `${level}st level (${num} slots):` : 
         `Cantrips:`
 
-    const abilitiesContent = [
-        { type: "header2", content: "Abilities" },
-        ...(data.abilities.map((id) => (
-            { 
-                type: "link-content", 
-                args: { target: id, attributes: data.stats.attributes, proficiency: proficiency }
-            }
-        )))
+    const arrayToString = (array) => {
+        return array.join(', ');
+    }
+
+    const capitalize = (text) => text[0]?.toUpperCase() + text.slice(1)?.toLowerCase();
+
+    const getAbilities = (abilities) => [
+        ...(abilities.none.length > 0 ? [
+            { type: "header2", content: "Abilities" },
+            ...abilities.none.map((abi) => <AbilityFile key={abi._id} document={abi} attributes={data.stats.attributes} proficiency={proficiency}/>),
+        ] : []),
+        ...(abilities.action.length > 0 ? [
+            { type: "header2", content: "Actions" },
+            ...abilities.action.map((abi) => <AbilityFile key={abi._id} document={abi} attributes={data.stats.attributes} proficiency={proficiency}/>),
+        ] : []),
+        ...(abilities.bonus.length > 0 ? [
+            { type: "header2", content: "Bonus Actions" },
+            ...abilities.bonus.map((abi) => <AbilityFile key={abi._id} document={abi} attributes={data.stats.attributes} proficiency={proficiency}/>),
+        ] : []),
+        ...(abilities.reaction.length > 0 ? [
+            { type: "header2", content: "Reactions" },
+            ...abilities.reaction.map((abi) => <AbilityFile key={abi._id} document={abi} attributes={data.stats.attributes} proficiency={proficiency}/>),
+        ] : []),
+        ...(abilities.free.length > 0 ? [
+            { type: "header2", content: "Free" },
+            ...abilities.free.map((abi) => <AbilityFile key={abi._id} document={abi} attributes={data.stats.attributes} proficiency={proficiency}/>),
+        ] : [])
     ];
 
-    const spellsContent = [
+    const getSpells = (spells) => [
         { type: "header2", content: "Spells" },
-        ...([0, ...data.spells.spellSlots].map((slot, index) => (
-            { type: "header4", content: spellSlotMap(index, slot) }
-        )))
-    ];
+        ...([0, ...data.spells.spellSlots].map((num, level) => spells[level]?.length > 0 ? [
+            { type: "header4", content: spellSlotMap(level, num) },
+            ...(spells[level].map((spe) => <SpellFile key={spe._id} document={spe} attributes={data.stats.attributes} proficiency={proficiency}/>))
+        ] : []).flat())
+    ]
 
-    const content = 
-    [
+    const getContent = (abilities, spells) => [
         { type: "align", content: [
             { type: "fill", content: [
                 { type: "v-group", content: [
-                    { type: "text", content: [{ type: "bold", content: `${data.size} ${data.type}, ${data.alignment}`} ]},
+                    { type: "text", content: [{ type: "bold", content: `${capitalize(data.size)} ${capitalize(data.type)}, ${capitalize(data.alignment)}`} ]},
                     { type: "box", content: [ 
                         { type: "header3", content: "Description" },
-                        { type: "text", content: [ data.shortText ]}
+                        { type: "text", content: [ DocumentParser.parse(data.shortText) ]}
                     ]}
                 ]}
             ]},
@@ -94,35 +115,77 @@ const CreRenderer = ({ document }) =>
         ]},
         { type: "box", content: [
             { type: "align", content: [
-                { type: "v-group", content: [{ type: "bold", content: "Senses" }, ...(data.stats.senses.length > 0 ? data.stats.senses : '-')]},
-                { type: "v-group", content: [{ type: "bold", content: "Languages" }, ...(data.stats.senses.length > 0 ? data.stats.languages : '-')]},
+                { type: "v-group", content: [{ type: "bold", content: "Senses" }, data.stats.senses.length > 0 ? arrayToString(data.stats.senses) : '-']},
+                { type: "v-group", content: [{ type: "bold", content: "Languages" }, data.stats.senses.length > 0 ? arrayToString(data.stats.languages) : '-']},
                 { type: "v-group", content: [{ type: "bold", content: "Challenge" }, data.stats.challenge]},
                 { type: "v-group", content: [{ type: "bold", content: "Proficiency Bonus" }, proficiency]}
             ]}
         ]},
         { type: "box", content: [
             { type: "align", content: [
-                { type: "v-group", content: [{ type: "bold", content: "Resistances" }, ...(data.stats.resistances.length > 0 ? data.stats.resistances : '-')]},
-                { type: "v-group", content: [{ type: "bold", content: "Immunities" }, ...(data.stats.immunities.length > 0 ? data.stats.immunities : '-')]},
-                { type: "v-group", content: [{ type: "bold", content: "Advantages" }, ...(data.stats.advantages.length > 0 ? data.stats.advantages : '-')]},
-                { type: "v-group", content: [{ type: "bold", content: "Disadvantages" }, ...(data.stats.disadvantages.length > 0 ? data.stats.disadvantages : '-')]}
+                { type: "v-group", content: [{ type: "bold", content: "Resistances" }, data.stats.resistances.length > 0 ? arrayToString(data.stats.resistances) : '-']},
+                { type: "v-group", content: [{ type: "bold", content: "Immunities" }, data.stats.immunities.length > 0 ? arrayToString(data.stats.immunities) : '-']},
+                { type: "v-group", content: [{ type: "bold", content: "Advantages" }, data.stats.advantages.length > 0 ? arrayToString(data.stats.advantages) : '-']},
+                { type: "v-group", content: [{ type: "bold", content: "Disadvantages" }, data.stats.disadvantages.length > 0 ? arrayToString(data.stats.disadvantages) : '-']}
             ]}
         ]},
-        ...(data.abilities.length > 0 ? abilitiesContent : []),
-        ...(data.spells.casterType !== "none" ? spellsContent : []),
-        DocumentParser.parse(data.text)
-    ];
+        ...getAbilities(abilities),
+        ...(data.spells.casterType !== "none" && Object.keys(spells).length > 0 ? getSpells(spells) : [])
+    ].map((x, key) => documentToComponent(x, key));
 
-    useEffect(() => setState({ loading: false, content: content.map((x, key) => documentToComponent(x, key)) }), [document])
+    useEffect(() => 
+    {
+        let abilities = { none: [], action: [], bonus: [], reaction: [], free: [] };
+        let spells = { };
+        let promises = [];
+
+        let abilityIDs = data.abilities.filter((x) => x.length === 24);
+        if (abilityIDs.length > 0)
+        {
+            promises.push(Server.files.getAll(abilityIDs))
+        }
+        let spellIDs = data.spells.spellIDs.filter((x) => x.length === 24);
+        if (spellIDs.length > 0)
+        {
+            promises.push(Server.files.getAll(spellIDs));
+        }
+
+        if (promises.length > 0)
+        {
+            Promise.all(promises)
+            .then((response) => 
+            {
+                let spe = response.find(x => x.result[0].type === "spe")?.result;
+                let abi = response.find(x => x.result[0].type === "abi")?.result;
+
+                if (spe) spe.forEach((x) => spells[x.content.level] ? spells[x.content.level].push(x) : spells[x.content.level] = [x]);
+                if (abi) abi.forEach((x) => abilities[x.content.actionType].push(x));
+
+                setState({ loading: false, content: getContent(abilities, spells)});
+            })
+            .catch((reason) => {
+                console.error(reason);
+                setState({ loading: false, content: getContent(abilities, spells)});
+            });
+        }
+        else
+        {
+            setState({ loading: false, content: getContent(abilities, spells)});
+        }
+
+    }, [document]);
 
     return state.loading ? null : (
         <div className="documentBackground">
             <div className={"documentTitle"}> {data.name} </div>
             <div className={"documentBody"}> 
                 { state.content }
+                { DocumentParser.parse(data.text) }
             </div>
         </div>
     );
 }
+
+// { data.abilities.map((id) => <AbilityFile document={id} attributes={data.stats.attributes} proficiency={proficiency}/> ) }
 
 export default CreRenderer;

@@ -75,7 +75,7 @@ class DBHandler
      * Establishes a database connection
      * @returns {Promise<Boolean>} If connection was successful
      */
-    static async connect(host = "localhost", port = "27018", url = undefined, isTesting = false)
+    static async connect(host = "localhost", port = "27017", url = undefined, isTesting = false)
     {
         this.#connection = new DBConnectionHandler(url ? url : `mongodb://${host}:${port}`);
         this.#isTesting  = isTesting;

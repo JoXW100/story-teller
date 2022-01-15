@@ -5,7 +5,8 @@ import '../@types';
 
 /**
  * @typedef DataJSON
- * @property {{ lastStory: String }} storageKeys
+ * @property {{ lastStory: string, folders: string }} storageKeys
+ * @property {number} folderDuration
  */
  /**
  * @typedef PopupHistoryElement

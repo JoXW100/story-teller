@@ -18,10 +18,35 @@ const StoryMenu = ({ history, match }) =>
     const [state, setState] = useState({ loading: true, story: null, showDiceMenu: false, showHistoryMenu: false });
     const inEditMode = match.params.editMode === "editMode=true";
 
-    const navigate = async (documentKey, editMode) => 
+    const navigate = (documentKey, newTab = false, editMode = inEditMode) => 
     {
-        let mode = editMode === undefined ? inEditMode : editMode;
-        history.push(`/stories/${match.params.key}/${documentKey}/editMode=${mode}`);
+        let url = "";
+        if (!documentKey)
+        {
+            if (state.story.defaultDocument)
+            {
+                url = `/stories/${match.params.key}/${state.story.defaultDocument}/editMode=${editMode}`;
+            }
+            else
+            {
+                url = `/stories/${match.params.key}`;
+            }
+        }
+        else
+        {
+            url = `/stories/${match.params.key}/${documentKey}/editMode=${editMode}`;
+        }
+        
+        if (!newTab)
+        {
+            history.push(url);
+        }
+        else
+        {
+            let x = window.location.href.split(/\//);
+            let res = window.open(`${x[0]}/${x[1]}/${x[2]}${url}`,'_blank', 'noopener, noreferrer');
+            if (res) res.opener = null;
+        }
     }
 
     useEffect(() => 
@@ -74,12 +99,12 @@ const StoryMenu = ({ history, match }) =>
                     <div className="storyTitleText"> {state.story.name} </div>
                     <div 
                         className={"storyTitleButton Edit"}
-                        onClick={() => navigate(match.params.doc, !inEditMode)}
+                        onClick={() => navigate(match.params.doc, false, !inEditMode)}
                     >
                         {inEditMode ? "Done" : "Edit"}
                     </div>
                 </div>
-                <Document id={match.params.doc} editEnabled={inEditMode}/>
+                <Document id={match.params.doc} editEnabled={inEditMode} navigate={navigate}/>
             </div>
             { state.showDiceMenu    && <DiceMenu hide={() => setState({ ...state, showDiceMenu: false })}/>}
             { state.showHistoryMenu && <HistoryMenu/>}

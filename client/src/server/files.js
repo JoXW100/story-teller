@@ -32,7 +32,7 @@ class FilesCommunication
     
     /**
      * Gets a file from the database
-     * @param {string} fileID The database identifier for the file
+     * @param {ObjectID} fileID The database identifier for the file
      * @returns {Promise<?{successful: boolean, result: DBFile}>} The file with the given id
      */
     async get(fileID)
@@ -41,8 +41,18 @@ class FilesCommunication
     }
 
     /**
+     * Gets all matching files from the database
+     * @param {[ObjectID]} fileIDs The database identifiers for the files
+     * @returns {Promise<?{successful: boolean, result: [DBFile]}>} The files with the given ids
+     */
+    async getAll(fileIDs)
+    {
+        return await get(`${this.#url}/getAll`, { ids: fileIDs });
+    }
+
+    /**
      * Gets identifiers of related file from the database
-     * @param {string} storyID The database identifier for the related story
+     * @param {ObjectID} storyID The database identifier for the related story
      * @returns {Promise<?{successful: boolean, result: [DBFile]}>} The files with the given story id
      */
     async getAllFrom(storyID)
@@ -52,7 +62,7 @@ class FilesCommunication
 
     /**
      * Gets identifiers of related files from the database
-     * @param {string} fileID The database identifier for the file holder
+     * @param {ObjectID} fileID The database identifier for the file holder
      * @returns {Promise<?{successful: boolean, result: [DBFile]}>} The files with the given holder id
      */
     async getAllChildren(fileID)
@@ -62,7 +72,7 @@ class FilesCommunication
 
     /**
      * Removes a file from the database
-     * @param {string} fileID The database identifier for the file
+     * @param {ObjectID} fileID The database identifier for the file
      * @returns {Promise<?{successful: boolean, result: boolean}>} If the file was removed
      */
     async remove(fileID)
@@ -72,7 +82,7 @@ class FilesCommunication
 
     /**
      * Updates a file in the database
-     * @param {string} fileID The database identifier for the file
+     * @param {ObjectID} fileID The database identifier for the file
      * @param {DBFileUpdateValues} data The file update data
      * @returns {Promise<?{successful: boolean, result: boolean}>} If the file was updated
      */

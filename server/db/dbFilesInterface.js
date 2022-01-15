@@ -62,7 +62,7 @@ class DBFilesInterface
     /**
      * Gets a file from the database
      * @param {ObjectID} fileID The id of the file to get
-     * @returns {Promise<?DBDocument>} The file
+     * @returns {Promise<?DBFile>} The file
      */
     async get(fileID)
     {
@@ -80,9 +80,30 @@ class DBFilesInterface
     }
 
     /**
+     * Gets all matching files from the database
+     * @param {[ObjectID]} fileIDs The ids of the files to get
+     * @returns {Promise<?[DBFile]>} The file
+     */
+    async getAll(fileIDs)
+    {
+        try
+        {
+            let objIDs = fileIDs.map((id) => ObjectID(id));
+            let result = await this.#collection.find({ _id: { $in: objIDs }}).toArray();
+            console.log(`GetAll: => ${result.length}`);
+            return result;
+        }
+        catch (error)
+        {
+            console.error(error);
+            return null;
+        }
+    }
+
+    /**
      * Gets all related file ids from the database
      * @param {ObjectID} storyID The id of the parent story
-     * @returns {Promise<?[DBDocument]>} The file ids
+     * @returns {Promise<?[DBFile]>} The file ids
      */
     async getFrom(storyID)
     {

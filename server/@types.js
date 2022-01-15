@@ -19,7 +19,10 @@
  * @property {ObjectID} holderID
  * @property {string} name
  * @property {string} type
- * @property { DBFolderFileContent|DBDocumentFileContent|DBCreatureFileContent} content
+ * @property { DBFolderFileContent
+ *           | DBDocumentFileContent
+ *           | DBCreatureFileContent
+ *           | DBAbilityFileContent } content
  * @property {number} dateCreated
  * @property {number} dateUpdated
  */
@@ -45,9 +48,9 @@
  * @property {string} filename
  */
 
-// -------------------
+// ---------------------
 // DATABASE UPDATE TYPES
-// -------------------
+// ---------------------
 
 /**
  * @typedef DBStoryUpdateValues
@@ -104,24 +107,30 @@
  * @property {string} shortText
  * @property {string} text
  * @property {string} notes
- * @property {string} abilityType // Ranged Attack, Melee Weapon, none
- * @property {string} actionType // action / bonus / special...
- * @property {number} charges // -1 for infinite
- * @property {string} chargeReset // none / short rest / long rest / dawn / noon
- * @property {HitCondition} roll
+ * @property {string} abilityType   none, Ranged Attack, Melee Weapon
+ * @property {string} actionType    none, special / action / bonus...
+ * @property {string} conditionType none / save / hit
+ * @property {string} saveAttribute none / str / dex
+ * @property {number} charges       -1 for infinite
+ * @property {string} chargeReset   none / short rest / long rest / dawn / noon
+ * @property {DiceModifiers} roll
  * @property {AbilityEffectDetails} effect
  */
 
 /**
- * @typedef DBSpellContent
+ * @typedef DBSpellFileContent
  * @property {string} name
+ * @property {string} shortText
  * @property {string} text
- * @property {number} level // Cantrips are 0
- * @property {string} castingTime
- * @property {string} duration
- * @property {string} school
- * @property {[string]} components
- * @property {HitCondition} roll
+ * @property {string} castingTime   action / bonus action / 10 min
+ * @property {string} conditionType none / save / hit
+ * @property {string} saveAttribute none / str / dex
+ * @property {number} level         cantrips are 0
+ * @property {string} duration      instantaneous / 1 round / 10 min
+ * @property {string} school        Conjuration / Evocation
+ * @property {string} components     V, M, S
+ * @property {boolean} concentration 
+ * @property {DiceModifiers} roll
  * @property {SpellEffectDetails} effect
  */
 
@@ -159,6 +168,7 @@
 /**
  * @typedef CreatureSpeed
  * @property {number} walk
+ * @property {number} climb
  * @property {number} swim
  * @property {number} fly
  * @property {number} burrow
@@ -177,25 +187,25 @@
  * @property {string} range
  * @property {string} successEffect
  * @property {string} failEffect
- * @property {HitCondition} roll
+ * @property {DiceModifiers} roll
  */
 
 /**
- * @typedef HitCondition
- * @property {string} scalingModifier // dex / str / none
- * @property {number} proficiency // multiplied with proficiency
- * @property {number} baseModifier
- * @property {number} diceSize
- * @property {number} diceNum
+ * @typedef DiceModifiers
+ * @property {string} scalingModifier none / dex / str
+ * @property {number} proficiency     multiplied with proficiency
+ * @property {number} baseModifier    + 1
+ * @property {number} diceSize        d20 + 1
+ * @property {number} diceNum         2d20 + 1
  */
 
 /**
  * @typedef SpellEffectDetails
- * @property {string} type //   buff / control / fire  / psychic
- * @property {string} attack // none / self    / melee / ranged
- * @property {string} area //   none / cube    / cone  / radius
- * @property {number} range
+ * @property {string} type  // none / dmg / status
+ * @property {string} dmg   // none /  buff / control / fire  / psychic
+ * @property {string} area  // none / cube    / cone  / radius
+ * @property {string} range
  * @property {string} successEffect
  * @property {string} failEffect
- * @property {HitCondition} roll
+ * @property {DiceModifiers} roll
  */

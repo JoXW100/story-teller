@@ -20,7 +20,7 @@ const File = ({ data, storyID, navigate, selected, reloadParent}) =>
         case "folder":
             return (
                 <FolderFile
-                    data={data}
+                    file={data}
                     storyID={storyID}
                     navigate={navigate}
                     selected={selected}

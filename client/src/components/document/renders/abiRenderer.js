@@ -33,32 +33,52 @@ export const AbilityFile = ({ document, attributes = undefined, proficiency = 0 
 
     const [state, setState] = useState({ loading: true, content: null});
     
-    const attributeToModifier = (key) => Math.floor(attributes[key] / 2) - 5
+    const attributeToModifier = (key) => attributes[key] ? Math.floor(attributes[key] / 2) - 5 : 0
 
-    const hitMod = attributes 
+    const conditionMod = attributes 
         ? hitRoll.baseModifier + hitRoll.proficiency * proficiency + attributeToModifier(hitRoll.scalingModifier)
         : hitRoll.baseModifier + hitRoll.proficiency * proficiency;
     
     const effectMod = attributes 
-        ? effectRoll.baseModifier + effectRoll.proficiency * proficiency + attributeToModifier(hitRoll.scalingModifier)
+        ? effectRoll.baseModifier + effectRoll.proficiency * proficiency + attributeToModifier(effectRoll.scalingModifier)
         : effectRoll.baseModifier + effectRoll.proficiency * proficiency;
 
-    const abilityTypeTable = {
-        "Melee Weapon": [
-            { type: "v-group", content: [{ type: "bold", content: "Range" }, data.effect.range ]},
-            { type: "v-group", content: [{ type: "bold", content: "Notes" }, data.notes ]},
-            { type: "roll", content: [{ type: "bold", content: "Hit/DC" }], args: { dice: hitRoll.diceSize, num: hitRoll.diceNum, mod: hitMod }},
-            { type: "roll", content: [{ type: "bold", content: "Damage" }, ` (${data.effect.type})`], args: { dice: effectRoll.diceSize, num: effectRoll.diceNum, mod: effectMod, isDmg: true }}
-        ]
+        const getEffectDmg = () => data.effect.type === "none" 
+        ? { type: "v-group", content: [{ type: "bold", content: "Effect" }, data.effect.successEffect ]}
+        : { type: "roll", content: [{ type: "bold", content: "Damage" }, ` (${data.effect.type})`], args: { dice: effectRoll.diceSize, num: effectRoll.diceNum, mod: effectMod, isDmg: true }}
+
+    const getEffect = () => {
+        switch (data.conditionType) {
+            case "hit": 
+                return [
+                    { type: "roll", content: [{ type: "bold", content: "Hit/DC" }], args: { dice: hitRoll.diceSize, num: hitRoll.diceNum, mod: conditionMod }},
+                    getEffectDmg()
+                ];
+            
+            case "save":
+                return [
+                    { type: "v-group", content: [{ type: "bold", content: "Hit/DC" }, [`${conditionMod} ${data.saveAttribute.toUpperCase()}`]]},
+                    getEffectDmg()
+                ];
+                
+            default:
+                return [];
+        }
     };
 
-    const content = [
-        { type: "box", content: [
+    const content = data.abilityType === "none" 
+        ? [{ type: "box", content: [ { type: "header3", content: data.name }, DocumentParser.parse(data.shortText) ]}] 
+        : [{ type: "box", content: [
             { type: "align", content: [
                 { type: "v-group", content: [{ type: "bold", content: "Name"}, data.name]},
                 { type: "v-group", content: [{ type: "bold", content: "Type"}, data.abilityType]},
-                ...(abilityTypeTable[data.abilityType])
-            ]}
+                { type: "v-group", content: [{ type: "bold", content: "Range" }, data.effect.range ]},
+                { type: "v-group", content: [{ type: "bold", content: "Notes" }, data.notes ]},
+                ...(getEffect())
+            ]},
+            ...(data.shortText.length > 0 ? [
+                { type: "header3" }, DocumentParser.parse(data.shortText)
+            ] : [])
         ]}
     ]
 

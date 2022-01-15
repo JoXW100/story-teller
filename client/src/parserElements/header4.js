@@ -1,5 +1,5 @@
 import React from 'react';
-import "../../styles/document.css";
+import "../styles/document.css";
 
 export const toHeader4Dictionary = (index) => ({
     "<h4>": { 
