@@ -186,7 +186,7 @@ const DocumentRoll = ({children, args}) =>
             <div> {children} </div>
             <div
                 className="documentRollInner"
-                onClick={(e) => e.currentTarget === e.target && handleFlat()}
+                onClick={(e) => e.currentTarget === e.target && (e.stopPropagation() & handleFlat())}
                 onContextMenu={onContextMenu}
             >
                 { state.content }

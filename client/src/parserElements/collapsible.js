@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import DocumentFunctions from '../classes/documentFunctions';
+import DocumentParser from '../classes/documentParser';
 import "../styles/document.css";
 
 export const toCollapsibleDictionary = (index) => ({
@@ -27,13 +28,13 @@ const DocumentCollapsible = ({ args, content }) =>
         <div className="documentCollapsible">
             <div 
                 className="documentCollapsibleHeader"
-                onClick={(e) => e.currentTarget === e.target && setIsOpen(!isOpen)}
+                onClick={() => setIsOpen(args.text && !isOpen)}
             >
-                { args.text ? args.text : "header text..." }
+                { content ? content : "Content..." }
             </div>
             { isOpen &&
                 <div className='documentCollapsibleContent'> 
-                    {content}  
+                    {DocumentParser.parse(args.text)}  
                 </div>
             }
         </div>

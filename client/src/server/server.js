@@ -58,8 +58,13 @@ export const put = async (url, data) =>
 export const get = async (url, data = {}) =>
 {
     let params = Object.keys(data).map((key) => `${key}=${data[key]}`).join('&');
-    let response = await fetch(`${url}?${params}`);
-    return response.ok ? await response.json() : null;
+    try {
+        let response = await fetch(`${url}?${params}`);
+        return response.ok ? await response.json() : null;
+    } catch (error) {
+        console.warn(error)
+        return null;
+    }
 }
 
 /**

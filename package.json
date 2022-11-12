@@ -3,10 +3,10 @@
     "version": "1.0.0",
     "type": "module",
     "scripts": {
-        "client": "cd client && npm run start",
-        "server": "cd server && npm run start",
+        "client": "cd client && set PORT=3006 && npm run start",
+        "server": "cd server && set PORT=3006 && npm run start",
         "start": "concurrently \"npm run server\" \"npm run client\""
     },
-    "author": "",
+    "author": "JoXW",
     "license": "ISC"
 }

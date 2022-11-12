@@ -19,25 +19,26 @@ class DocumentParser
         ...Dictionaries.toHeader2Dictionary(2),
         ...Dictionaries.toHeader3Dictionary(3),
         ...Dictionaries.toHeader4Dictionary(4),
-        ...Dictionaries.toBoxDictionary(5),
-        ...Dictionaries.toLinkDictionary(6),
-        ...Dictionaries.toLinkContentDictionary(7),
-        ...Dictionaries.toLinkTitleDictionary(8),
-        ...Dictionaries.toTextDictionary(9),
-        ...Dictionaries.toListDictionary(10),
-        ...Dictionaries.toAlignDictionary(11),
-        ...Dictionaries.toBoldDictionary(12),
-        ...Dictionaries.toGroupDictionary(13),
-        ...Dictionaries.toVGroupDictionary(14),
-        ...Dictionaries.toImageDictionary(15),
-        ...Dictionaries.toFillDictionary(16),
-        ...Dictionaries.toCircleDictionary(17),
-        ...Dictionaries.toRollDictionary(18),
-        ...Dictionaries.toCollapsibleDictionary(19),
-        ...Dictionaries.toTableDictionary(20),
-        ...Dictionaries.toTableHeaderDictionary(21),
-        ...Dictionaries.toTableItemDictionary(22),
-        ...Dictionaries.toTableRowDictionary(23)
+        ...Dictionaries.toHeader5Dictionary(5),
+        ...Dictionaries.toBoxDictionary(6),
+        ...Dictionaries.toLinkDictionary(7),
+        ...Dictionaries.toLinkContentDictionary(8),
+        ...Dictionaries.toLinkTitleDictionary(9),
+        ...Dictionaries.toTextDictionary(10),
+        ...Dictionaries.toListDictionary(11),
+        ...Dictionaries.toAlignDictionary(12),
+        ...Dictionaries.toBoldDictionary(13),
+        ...Dictionaries.toGroupDictionary(14),
+        ...Dictionaries.toVGroupDictionary(15),
+        ...Dictionaries.toImageDictionary(16),
+        ...Dictionaries.toFillDictionary(17),
+        ...Dictionaries.toCircleDictionary(18),
+        ...Dictionaries.toRollDictionary(19),
+        ...Dictionaries.toCollapsibleDictionary(20),
+        ...Dictionaries.toTableDictionary(21),
+        ...Dictionaries.toTableHeaderDictionary(22),
+        ...Dictionaries.toTableItemDictionary(23),
+        ...Dictionaries.toTableRowDictionary(24)
     }
 
     /**
@@ -47,47 +48,92 @@ class DocumentParser
      */
     static parse = (text) => 
     {
-        let parentStack = [{ 
+        let stack = [{ 
             cmp: 0, 
             type: "holder",
             toComponent: (content) => content, 
             content: [] 
         }];
 
-        let list = text.split(/(<.*?>)/);
-        list.forEach((part) => this.#parsePart(part, parentStack));
+        let bracketCounter = 0;
+        let contentStart = 0;
+        let match;
 
-        return this.#buildBody(parentStack[0], 0);
-    }
-    
-    /**
-     * Parses a node part modifying the stack
-     * @param {string} part The part to parse
-     * @param {[PartStackElement]} stack The stack holding the other nodes
-     * @returns {void}
-     */
-    static #parsePart = (part, stack) =>
-    {
-        part = part.trim();
-        if (part === "" || part === " ") return;
-
-        let lookup = this.#tagDictionary[part];
-        let parent = stack[stack.length - 1];
-        if (lookup)
+        let indexes = [];
+        let reg = /[>]/g;
+        while (match = reg.exec(text))
         {
-            if (lookup.cmp === -parent.cmp) stack.pop();
-            else
+            indexes.push(match.index)
+        }
+
+        if (indexes.length === 0) return text;
+        
+        let bracketIndexes = [];
+        reg = /[\[\]]/g;
+        while (match = reg.exec(text))
+        {
+            bracketIndexes.push(match.index)
+        }
+
+        for (let index = 0; index < text.length; index++) 
+        {
+            if (bracketCounter > 0)
             {
-                if (lookup.cmp < 0) return "An unexpected error ocurred";
-                let item = {...lookup, content: []};
-                parent.content.push(item);
-                stack.push(item);
+                index = bracketIndexes.find(x => x >= index);
+            }
+            let parent = stack[stack.length - 1];
+
+            switch (text[index]) 
+            {
+                case '[':
+                    if (parent.type !== 'holder') bracketCounter++;
+                    break;
+                case ']':
+                    if (parent.type !== 'holder') bracketCounter--;
+                    break;
+
+                case '<':
+
+                    // Push Content
+                    let content = text.substring(contentStart, index).trim();
+                    if (content.length > 0) parent.content.push({ type: "text", text: content });
+                    
+                    // Find Header End
+                    let end = indexes.find(n => n > index);
+                    if (!end) return "Error";
+
+                    let subString = text.substring(index, end + 1);
+                    let lookup = this.#tagDictionary[subString];
+                    index = end;
+                    contentStart = end + 1;
+
+                    // If a known element
+                    if (lookup)
+                    {
+                        if (lookup.cmp === -parent.cmp) stack.pop();
+                        else if (lookup.cmp > 0)
+                        {
+                            let item = {...lookup, content: []};
+                            parent.content.push(item);
+                            stack.push(item);
+                        }
+                    }
+                    else
+                    {
+                        parent.content.push({ type: "text", text: subString })
+                    }
+                    
+            
+                default:
+                    break;
             }
         }
-        else
-        {
-            parent.content.push({ type: "text", text: part });
-        }
+
+        // Finally add the remaining text
+        let subString = text.substring(contentStart, text.length);
+        if (subString.length > 0) stack[0].content.push({ type: "text", text: subString })
+
+        return this.#buildBody(stack[0]);
     }
 
     /**
@@ -98,7 +144,7 @@ class DocumentParser
      */
     static #buildBody = (node, index) => 
     {
-        return node.type === "text" ? node.text
+        return node.type === "text" ? node.text.trim()
             : node.toComponent(node.content.map((item, index) => this.#buildBody(item, index)), index);
     }
 }

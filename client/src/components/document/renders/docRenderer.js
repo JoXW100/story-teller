@@ -1,18 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import DocumentParser from '../../../classes/documentParser';
 
 /**
  * 
- * @param {{ document: DBFile }} 
+ * @param {{ doc: DBFile }} 
  * @returns {React.Component}
  */
-const DocRenderer = ({ document }) => 
+const DocRenderer = ({ doc }) => 
 {
+    useEffect(() =>
+    {
+        if (doc.content?.title) document.title = doc.content.title;
+    }, [doc]);
+
     return (
         <div className="documentBackground">
-            <div className={"documentTitle"}> {document.content.title} </div>
+            <div className={"documentTitle"}> {doc.content.title} </div>
             <div className={"documentBody"}> 
-                {DocumentParser.parse(document.content.text)} 
+                {DocumentParser.parse(doc.content.text)} 
             </div>
         </div>
     );

@@ -4,16 +4,21 @@ import { documentToComponent } from '../documentRender';
 
 /**
  * 
- * @param {{ document: DBFile }} 
+ * @param {{ doc: DBFile }} 
  * @returns {React.Component}
  */
-const AbiRenderer = ({ document }) => 
+const AbiRenderer = ({ doc }) => 
 {
+    useEffect(() =>
+    {
+        if (doc.content?.name) document.title = doc.content.name;
+    }, [doc.content]);
+
     return (
         <div className="documentBackground">
             <div className={"documentBody"}> 
-                <AbilityFile document={document}/>
-                {DocumentParser.parse(document.content.text)} 
+                <AbilityFile document={doc}/>
+                {DocumentParser.parse(doc.content.text)} 
             </div>
         </div>
     );

@@ -5,18 +5,20 @@ export const toTableDictionary = (index) => ({
     "<table>": { 
         cmp: index,  
         type: "table", 
-        toComponent: (content, index) => <DocumentTable key={index}> {content} </DocumentTable>
+        toComponent: (content, index) => <DocumentTable key={index} content={content}/>
     },
     "</table>": { 
         cmp: -index
     }
 });
 
-const DocumentTable = ({ children }) => 
+const DocumentTable = ({ content }) => 
 {
     return (
         <table className="documentTable"> 
-            {children} 
+            <tbody>
+                { content.filter(x => typeof(x) !== typeof("")) } 
+            </tbody>
         </table>
     )
 }

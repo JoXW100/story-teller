@@ -4,16 +4,21 @@ import { documentToComponent } from '../documentRender';
 
 /**
  * 
- * @param {{ document: DBFile }} 
+ * @param {{ doc: DBFile }} 
  * @returns {React.Component}
  */
-const SpeRenderer = ({ document }) => 
+const SpeRenderer = ({ doc }) => 
 {
+    useEffect(() =>
+    {
+        if (doc.content?.name) document.title = doc.content.name;
+    }, [doc.content]);
+
     return (
         <div className="documentBackground">
             <div className={"documentBody"}> 
-                <SpellFile document={document}/>
-                {DocumentParser.parse(document.content.text)} 
+                <SpellFile document={doc}/>
+                {DocumentParser.parse(doc.content.text)} 
             </div>
         </div>
     );
@@ -62,7 +67,7 @@ export const SpellFile = ({ document, attributes = undefined, proficiency = 0 })
 
     const content = 
     [
-        { type: "box", content: [
+        { type: "collapsible", content: [
             { type: "align", content: [
                 { type: "v-group", content: [{ type: "bold", content: "Name"}, data.name]},
                 { type: "v-group", content: [{ type: "bold", content: "Time"}, data.castingTime]},
@@ -71,9 +76,8 @@ export const SpellFile = ({ document, attributes = undefined, proficiency = 0 })
                 { type: "v-group", content: [{ type: "bold", content: "Components"}, data.components]},
                 getEffectHit(),
                 getEffectDmg()
-            ]},
-            ...(data.shortText.length > 0 ? [{ type: "header3" }, DocumentParser.parse(data.shortText) ] : [])
-        ]}
+            ]}
+        ], args: { text: data.shortText, default: "false" } }
     ];
 
     useEffect(() => setState({ loading: false, content: content.map((x, key) => documentToComponent(x, key)) }), [document])

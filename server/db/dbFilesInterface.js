@@ -152,7 +152,7 @@ class DBFilesInterface
             (await this.getChildren(fileID))?.forEach((file) => this.remove(file._id));
 
             let result = await this.#collection.deleteOne({ _id: ObjectID(fileID) });
-            console.log(`Remove: ${fileID} => ${result.deletedCount == 1}`);
+            console.log(`Remove: ${fileID} => ${result.deletedCount == 1} \n${JSON.stringify(result)}\n`);
             return result.deletedCount == 1;
         }
         catch (error)

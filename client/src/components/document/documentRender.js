@@ -14,6 +14,7 @@ import DocumentLinkContent from '../../parserElements/linkContent';
 import DocumentRoll from '../../parserElements/roll';
 import DocumentText from '../../parserElements/text';
 import DocumentVGroup from '../../parserElements/vGroup';
+import DocumentCollapsible from '../../parserElements/collapsible';
 import "../../styles/document.css";
 
 /**
@@ -29,20 +30,20 @@ const DocumentRender = ({ document }) =>
     {
         switch (document.type) {
             case "cre":
-                return <CreRenderer document={document}/>;
+                return <CreRenderer doc={document}/>;
 
             case "abi":
-                return <AbiRenderer document={document}/>;
+                return <AbiRenderer doc={document}/>;
             
             case "spe":
-                return <SpeRenderer document={document}/>
+                return <SpeRenderer doc={document}/>
 
             default:
-                return <DocRenderer document={document}/>;
+                return <DocRenderer doc={document}/>;
         }
     }
 
-    useEffect(() => setState({ loaded: true, content: generateDocument() }), [document])
+    useEffect(() => setState({ loaded: true, content: generateDocument() }), [document]);
     
     return state.loaded ? state.content : null;
 }
@@ -86,6 +87,9 @@ export const documentToComponent = (x, key = 0) =>
                 
         case "header4":
             return <DocumentHeader4 key={key} children={x.content}/>
+
+        case "collapsible":
+            return <DocumentCollapsible key={key} args={x.args} content={x.content.map((y, index) => documentToComponent(y, index))}/>
 
         default:
             return x;

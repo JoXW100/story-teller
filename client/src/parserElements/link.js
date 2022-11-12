@@ -29,7 +29,8 @@ const DocumentLink = ({ args, content, children }) =>
     const getHREF = () =>
     {
         let x = window.location.href.split(/\//);
-        return `${x[0]}/${x[1]}/${x[2]}/${x[3]}/${x[4]}/${validID(args.target) ? args.target : x[5]}/${x[6]}`;
+        let href = `${x[0]}/${x[1]}/${x[2]}/${x[3]}/${x[4]}/${validID(args.target) ? args.target : x[5]}/${x[6]}`;
+        return href;
     }
 
     return (

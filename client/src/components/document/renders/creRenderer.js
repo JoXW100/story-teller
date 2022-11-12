@@ -7,14 +7,15 @@ import { SpellFile } from './speRenderer';
 
 /**
  * 
- * @param {{ document: DBFile }} 
+ * @param {{ doc: DBFile }} 
  * @returns {React.Component}
  */
-const CreRenderer = ({ document }) => 
+const CreRenderer = ({ doc }) => 
 {
     /** @type {DBCreatureFileContent} */
-    const data = document.content;
+    const data = doc.content;
     const [state, setState] = useState({ loading: true, content: null });
+    console.log(data)
 
     const attributeToModifier = (key) => Math.floor(data.stats.attributes[key] / 2) - 5
     const healthBonus = attributeToModifier("con") * data.stats.level;
@@ -116,7 +117,7 @@ const CreRenderer = ({ document }) =>
         { type: "box", content: [
             { type: "align", content: [
                 { type: "v-group", content: [{ type: "bold", content: "Senses" }, data.stats.senses.length > 0 ? arrayToString(data.stats.senses) : '-']},
-                { type: "v-group", content: [{ type: "bold", content: "Languages" }, data.stats.senses.length > 0 ? arrayToString(data.stats.languages) : '-']},
+                { type: "v-group", content: [{ type: "bold", content: "Languages" }, data.stats.languages.length > 0 ? arrayToString(data.stats.languages) : '-']},
                 { type: "v-group", content: [{ type: "bold", content: "Challenge" }, data.stats.challenge]},
                 { type: "v-group", content: [{ type: "bold", content: "Proficiency Bonus" }, proficiency]}
             ]}
@@ -173,7 +174,9 @@ const CreRenderer = ({ document }) =>
             setState({ loading: false, content: getContent(abilities, spells)});
         }
 
-    }, [document]);
+        if (data?.name) document.title = data.name;
+
+    }, [doc]);
 
     return state.loading ? null : (
         <div className="documentBackground">

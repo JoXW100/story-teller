@@ -77,19 +77,19 @@ const CreEditor = ({ document, save }) =>
                     text="Level"
                     type="number"
                     value={state.content.stats.level} 
-                    setValue={(value) => setState({ ...state, content: { ...state.content, stats: { ...state.content.stats, level: parseInt(value) }}})}
+                    setValue={(value) => setState({ ...state, content: { ...state.content, stats: { ...state.content.stats, level: parseInt(value) ?? 0 }}})}
                 />
                 <DocumentEditInputSection
                     text="HitDice"
                     type="number"
                     value={state.content.stats.hitDice} 
-                    setValue={(value) => setState({ ...state, content: { ...state.content, stats: { ...state.content.stats, hitDice: parseInt(value) }}})}
+                    setValue={(value) => setState({ ...state, content: { ...state.content, stats: { ...state.content.stats, hitDice: parseInt(value) ?? 0 }}})}
                 />
                 <DocumentEditInputSection
                     text="Armor"
                     type="number"
                     value={state.content.stats.armor} 
-                    setValue={(value) => setState({ ...state, content: { ...state.content, stats: { ...state.content.stats, armor: parseInt(value) }}})}
+                    setValue={(value) => setState({ ...state, content: { ...state.content, stats: { ...state.content.stats, armor: parseInt(value) ?? 0 }}})}
                 />
                 <DocumentArraySection
                     text="Senses"
